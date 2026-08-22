@@ -1,8 +1,10 @@
-import { Component, signal, resource, inject, ChangeDetectionStrategy, PLATFORM_ID, computed, effect } from '@angular/core';
-import { isPlatformBrowser, CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { Component, signal, resource, inject, ChangeDetectionStrategy, PLATFORM_ID, effect } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { SupabaseService, ArticuloResult } from './core/services/supabase';
+import { ProvinceSelect } from './shared/components/province-select/province-select';
+import { SearchInput } from './shared/components/search-input/search-input';
+import { ResultRow } from './shared/components/result-row/result-row';
 
 const PROVINCIAS = [
   'NACIONAL', 'A Coruña', 'Álava', 'Albacete', 'Alicante', 'Almería', 'Asturias', 'Ávila', 'Badajoz', 'Baleares', 'Barcelona', 'Burgos', 'Cáceres', 'Cádiz', 'Cantabria', 'Castellón', 'Ceuta', 'Ciudad Real', 'Córdoba', 'Cuenca', 'Girona', 'Granada', 'Guadalajara', 'Guipúzcoa', 'Huelva', 'Huesca', 'Jaén', 'La Rioja', 'Las Palmas', 'León', 'Lleida', 'Lugo', 'Madrid', 'Málaga', 'Murcia', 'Navarra', 'Ourense', 'Palencia', 'Pontevedra', 'Salamanca', 'Santa Cruz de Tenerife', 'Segovia', 'Sevilla', 'Soria', 'Tarragona', 'Teruel', 'Toledo', 'Valencia', 'Valladolid', 'Vizcaya', 'Zamora', 'Zaragoza'
@@ -10,8 +12,7 @@ const PROVINCIAS = [
 
 @Component({
   selector: 'app-root',
-  standalone: true,
-  imports: [CommonModule, FormsModule, ScrollingModule],
+  imports: [ScrollingModule, ProvinceSelect, SearchInput, ResultRow],
   templateUrl: './app.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
