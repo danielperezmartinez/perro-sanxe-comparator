@@ -105,24 +105,57 @@ con estado.
 
 ### 1. Gestor de paquetes y su política
 
-- **npm** (`package.json` + `package-lock.json`). No hay política adicional
-  documentada (cuarentena de versiones, scripts de instalación, etc.).
+- **pnpm** exclusivamente (`package.json` + `pnpm-lock.yaml`). **Prohibido
+  usar npm o yarn** para instalar o gestionar las dependencias del proyecto.
+- **Motivo:** pnpm bloquea por defecto los "lifecycle scripts"
+  (`preinstall`/`install`/`postinstall`) de las dependencias, que es el
+  vector que han venido explotando los gusanos de cadena de suministro de
+  npm (Shai-Hulud / Mini Shai-Hulud, 2025-2026): un paquete comprometido
+  publica una versión maliciosa cuyo script de instalación roba
+  credenciales y se propaga a otros paquetes. npm no bloquea esto por
+  defecto en las versiones usadas actualmente.
+- **Enforcement:**
+  - `package.json` fija `"packageManager": "pnpm@<versión>"` (vía
+    Corepack) y un script `"preinstall": "npx --yes only-allow pnpm"` que
+    aborta si se ejecuta `npm install`/`yarn install`. Ese `npx` es solo un
+    ejecutor de binario, no gestión de dependencias del proyecto — no
+    contradice la política.
+  - `package-lock.json`/`yarn.lock` no deben existir en el repo;
+    `pnpm-lock.yaml` es el único lockfile válido.
+- **`pnpm-workspace.yaml` y `allowBuilds`:** por defecto pnpm bloquea el
+  script de build de toda dependencia. Solo se permite explícitamente, bajo
+  la clave `allowBuilds` de `pnpm-workspace.yaml`, lo que el toolchain
+  realmente necesita para funcionar (revisado caso a caso con `pnpm why
+  <paquete>` antes de aprobarlo, nunca "a ciegas"). Añadir una dependencia
+  nueva cuya instalación quede bloqueada por un script de build es una
+  señal para revisar si de verdad hace falta antes de aprobarla.
 
 ### 2. Framework, stack y patrones de código
 
 **Stack**
 
-- **Angular 21** + **@angular/ssr** (Express 5) — servidor SSR en
+- **Angular 22** + **@angular/ssr** (Express 5) — servidor SSR en
   `dist/perro-sanxe-comparator/server/server.mjs`.
 - **Supabase** (`@supabase/supabase-js`) — auth, base de datos (PostgreSQL) y
   Edge Functions (Deno) para scraping.
 - **Tailwind CSS 3** + PostCSS + Autoprefixer. No añadir librerías de UI
   adicionales sin consenso.
 - **Angular CDK** — primitivas de UI.
-- **TypeScript 5.9** · **Vitest** · **Prettier**.
+- **TypeScript 6** · **Vitest** · **Prettier**.
 - Buscador: PostgreSQL Full Text Search con soporte para español y
   `unaccent`, expuesto vía RPC (`websearch_to_tsquery`) para tolerar errores
   tipográficos y términos incompletos.
+
+**Zoneless y full reactive**
+
+- Proyecto **totalmente zoneless**: `provideZonelessChangeDetection()` en
+  `src/app/app.config.ts`. Prohibido añadir `zone.js` como polyfill
+  (`angular.json`) o como dependencia.
+- **Full reactive siempre**: todo el estado, local y derivado, se modela con
+  `signal()` / `computed()` / `effect()` / `resource()` / `linkedSignal()`.
+  RxJS se reserva para interoperabilidad puntual con APIs que lo exijan
+  (p. ej. el `async` pipe sobre un `Observable` de una librería externa), no
+  para modelar estado de la app.
 
 **TypeScript**
 
@@ -141,6 +174,13 @@ con estado.
 - Componentes pequeños y de responsabilidad única; plantillas inline para
   componentes pequeños; plantillas y estilos externos con rutas relativas al
   fichero `.ts` del componente.
+- **Reutilización antes que copy-paste:** siempre que una pieza de UI pueda
+  reaparecer o sea una unidad de interacción distinta, se extrae a
+  `src/app/shared/components/` como componente presentacional (recibe datos
+  por `input()`, notifica por `output()`, sin `inject()` de servicios de
+  datos). El estado y las llamadas a servicios viven en los componentes que
+  orquestan (hoy `App`; en el futuro, componentes de feature). Ver
+  "Arquitectura objetivo" más abajo.
 - Formularios reactivos en vez de template-driven.
 - Lazy loading para rutas de features.
 - NO usar `@HostBinding` / `@HostListener` — usar el objeto `host` del
@@ -156,6 +196,22 @@ con estado.
 
 - Responsabilidad única; `providedIn: 'root'` para singletons; `inject()` en
   vez de inyección por constructor.
+
+**Tests**
+
+- **Vitest** (vía el builder `@angular/build:unit-test`) es el único test
+  runner del proyecto; no se usan Karma ni Jasmine.
+- Crear tests unitarios siempre que el código introducido lo justifique:
+  lógica no trivial, estado derivado (`computed()`), efectos secundarios
+  (`effect()`, `resource()`) o contratos de servicio. Los componentes
+  puramente presentacionales sin lógica se cubren con un test mínimo de
+  creación/render.
+- Los componentes de `shared/components/` (presentacionales) prueban al
+  menos: que se crean y que su comportamiento de entrada/salida
+  (`input()`/`output()`) es correcto.
+- Ficheros de configuración/setup del test runner globales (registro de
+  locale, etc.) van en `src/test-setup.ts`, referenciado desde
+  `setupFiles` en `angular.json` (target `test`).
 
 **Accesibilidad**
 
@@ -203,11 +259,12 @@ con estado.
 
 ## Propósito del proyecto
 
-Aplicación web (Angular 21 + Supabase) para comparar en tiempo real precios de
+Aplicación web (Angular 22 + Supabase) para comparar en tiempo real precios de
 supermercados en España.
 
-- **Frontend:** Angular 21 (Signals, Standalone Components, RxJS para flujos
-  complejos).
+- **Frontend:** Angular 22, zoneless, full reactive (Signals, Standalone
+  Components). RxJS queda solo para interoperabilidad puntual, no para
+  modelar estado — ver "2. Framework, stack y patrones de código".
 - **Backend/Base de datos:** Supabase (PostgreSQL).
 
 ## Arquitectura objetivo
@@ -218,12 +275,23 @@ supermercados en España.
 src/app/
 ├── core/
 │   └── services/
-│       └── supabase.ts     # Cliente Supabase centralizado
-├── app.config.ts           # Providers de la app (incluye SSR hydration)
-├── app.config.server.ts    # Providers específicos del servidor
-├── app.routes.ts           # Rutas principales
-└── app.routes.server.ts    # Rutas SSR
+│       └── supabase.ts       # Cliente Supabase centralizado
+├── shared/
+│   └── components/            # UI reutilizable y presentacional
+│       ├── province-select/   # input()/output(), sin inject() de servicios
+│       ├── search-input/
+│       └── result-row/
+├── app.config.ts             # Providers de la app (incluye SSR hydration)
+├── app.config.server.ts      # Providers específicos del servidor
+├── app.routes.ts             # Rutas principales
+└── app.routes.server.ts      # Rutas SSR
 ```
+
+Los componentes de `shared/components/` son presentacionales: reciben datos
+por `input()` y notifican por `output()`, sin inyectar servicios de datos ni
+conocer Supabase. El estado (signals, `resource()`) y las llamadas a
+servicios viven en los componentes que orquestan (hoy `App`; en el futuro,
+los componentes de feature que se añadan).
 
 Las credenciales de Supabase van en `src/environments/environment.ts` (no se
 commitea).
