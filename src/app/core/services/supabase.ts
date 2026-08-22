@@ -1,4 +1,5 @@
-import { Injectable } from '@angular/core';
+import { Injectable, PLATFORM_ID, inject } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { environment } from '../../../environments/environment';
 
@@ -18,17 +19,16 @@ export interface ArticuloResult {
   providedIn: 'root'
 })
 export class SupabaseService {
-  private supabase: SupabaseClient;
-
-  constructor() {
-    this.supabase = createClient(environment.supabase.url, environment.supabase.key);
-  }
+  private platformId = inject(PLATFORM_ID);
+  private supabase: SupabaseClient | undefined = isPlatformBrowser(this.platformId)
+    ? createClient(environment.supabase.url, environment.supabase.key)
+    : undefined;
 
   async searchArticulos(query: string): Promise<ArticuloResult[]> {
-    if (!query || query.trim() === '') {
+    if (!this.supabase || !query || query.trim() === '') {
       return [];
     }
-    
+
     const { data, error } = await this.supabase
       .rpc('search_articulos_laxo', { search_query: query });
 
