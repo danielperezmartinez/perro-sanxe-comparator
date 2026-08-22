@@ -293,8 +293,13 @@ conocer Supabase. El estado (signals, `resource()`) y las llamadas a
 servicios viven en los componentes que orquestan (hoy `App`; en el futuro,
 los componentes de feature que se añadan).
 
-Las credenciales de Supabase van en `src/environments/environment.ts` (no se
-commitea).
+`src/environments/environment.ts` contiene la URL del proyecto y la clave
+**anon/publishable** de Supabase — **sí se commitea**: esa clave está
+diseñada para ir en código de cliente (la seguridad real la da Row Level
+Security en Postgres, no el secreto de la clave). Lo que **nunca** debe
+aparecer en este fichero, en el repo, ni en código de cliente en general es
+la clave `service_role`/secreta, que sí es privada porque salta RLS por
+completo.
 
 ### Arquitectura de datos (PostgreSQL)
 
