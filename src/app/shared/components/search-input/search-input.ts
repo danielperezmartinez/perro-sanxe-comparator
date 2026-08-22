@@ -3,22 +3,27 @@ import { ChangeDetectionStrategy, Component, input, output } from '@angular/core
 @Component({
   selector: 'app-search-input',
   template: `
-    <div class="relative max-w-2xl mx-auto">
+    <label for="tique-search" class="block text-[10px] font-bold text-tique-ink mb-1.5">
+      ¿QUÉ ANDAS BUSCANDO?
+    </label>
+    <div class="flex items-center gap-2 min-h-[48px] bg-[#fffdf6] border-2 border-dashed border-tique-ink px-3">
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        class="h-6 w-6 absolute left-4 top-1/2 transform -translate-y-1/2 text-linear-text-tertiary"
+        class="h-4 w-4 text-tique-ink flex-shrink-0"
         fill="none"
         viewBox="0 0 24 24"
         stroke="currentColor"
+        stroke-width="2.5"
       >
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
       </svg>
       <input
+        id="tique-search"
         type="text"
         [value]="value()"
         (input)="valueChange.emit($any($event.target).value)"
-        placeholder="Buscar un artículo (ej. leche entera, aceite...)"
-        class="linear-input pl-12 py-4 text-lg bg-[#191a1b] border-linear-border-subtle shadow-[0_0_12px_rgba(0,0,0,0.2)_inset]"
+        placeholder="leche entera, aceite, pan..."
+        class="flex-grow bg-transparent text-sm text-tique-ink font-mono placeholder:text-tique-muted focus:outline-none"
         aria-label="Buscar artículo"
       />
     </div>

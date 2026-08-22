@@ -1,10 +1,15 @@
 ---
 Nombre: Implementar el rediseño Tique de Barrio en la app
-Estado: Pendiente
-Resumen: Llevar a código el rediseño visual "Tique de Barrio" (paleta Videoclub) acordado con el usuario, sustituyendo el theme actual inspirado en Linear en tailwind.config.js, src/styles.css y src/app/app.html.
+Estado: Hecha
+Resumen: Llevado a código el rediseño visual "Tique de Barrio" (paleta Videoclub, corregida en [[Ajuste de contraste AA de la paleta Videoclub]]) en tailwind.config.js, src/styles.css, src/app/app.html y los tres componentes compartidos (ProvinceSelect, SearchInput, ResultRow).
+Decisiones:
+  - Se elimina la imagen del artículo en ResultRow, siguiendo al pie de la letra la anatomía ya acordada en [[Anatomía del componente tique]] (nunca la incluyó).
+  - ResultRow gana el input 'isBest' (booleano) para el sello "MÁS BARATO" y la píldora en verde azulado, manteniendo 'last' para el borde separador — cambio de contrato documentado en el Catálogo técnico en el mismo commit.
+  - Verificado el contraste WCAG AA de toda la paleta durante la implementación (pendiente que dejaba la decisión Nº1): dos colores no llegaban al mínimo y se corrigieron — ver [[Ajuste de contraste AA de la paleta Videoclub]].
+  - Breakpoint de escritorio fijado en `lg` (Tailwind, 1024px); por debajo se usa el layout de una columna también en tablet, sin estado intermedio propio.
 Bloqueada: []
 Fecha de creación: 2026-08-22T21:00:00+02:00
-Última modificación: 2026-08-22T21:00:00+02:00
+Última modificación: 2026-08-22T23:45:00+02:00
 ---
 
 # Implementar el rediseño Tique de Barrio en la app
@@ -46,8 +51,28 @@ anterior inspirado en Linear, y `src/app/app.html` los usa directamente.
 
 ## Verificación
 
-<!-- Rellenar al completar la tarea: qué se comprobó y con qué resultado. -->
+- `pnpm test` (Vitest vía `@angular/build:unit-test`): 5 ficheros, 11 tests,
+  todos en verde, incluida una prueba nueva para `isBest` en `ResultRow`.
+- `pnpm build`: compila sin errores. Aviso preexistente (no relacionado con
+  este cambio) de presupuesto de bundle inicial superado por 71kB — no se ha
+  tocado ningún JS de dependencias en esta tarea.
+- `grep -r "linear-" src/`: sin resultados — no queda ningún resto del theme
+  anterior.
+- Inspección del HTML renderizado en servidor (`curl http://localhost:4200/`
+  con `pnpm start`): confirma que la cabecera, el sufijo "COMPARATOR", el
+  buscador con su etiqueta, el selector de provincia y las perforaciones del
+  tique se generan con el marcado y las clases esperadas.
+- Contraste WCAG AA calculado a mano (fórmula de luminancia relativa) para
+  toda la paleta — resultado y correcciones en [[Ajuste de contraste AA de
+  la paleta Videoclub]].
+- **No verificado**: renderizado visual real en navegador (píxeles, carga de
+  fuentes, comprobación AXE) — esta sesión no tenía una herramienta de
+  navegador disponible. Queda para que el usuario lo revise abriendo
+  `pnpm start` en `http://localhost:4200`.
 
 ## Resultado
 
-<!-- Rellenar al completar la tarea. -->
+Rediseño implementado en `tailwind.config.js`, `src/styles.css`,
+`src/index.html` (fuentes + `lang="es"`), `src/app/app.ts`, `src/app/app.html`
+y los tres componentes de `shared/components/`. Los cambios no están
+comiteados (a la espera de que el usuario los revise/apruebe).

@@ -38,4 +38,18 @@ describe('ResultRow', () => {
 
     expect(fixture.nativeElement.classList.contains('border-b')).toBe(false);
   });
+
+  it('shows the "MÁS BARATO" stamp only when isBest is true', () => {
+    const fixture = TestBed.createComponent(ResultRow);
+    fixture.componentRef.setInput('item', ITEM);
+    fixture.componentRef.setInput('isBest', false);
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.textContent).not.toContain('MÁS BARATO');
+
+    fixture.componentRef.setInput('isBest', true);
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.textContent).toContain('MÁS BARATO');
+  });
 });

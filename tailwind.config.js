@@ -6,26 +6,27 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        'linear-bg': '#08090a',
-        'linear-panel': '#0f1011',
-        'linear-surface': '#191a1b',
-        'linear-surface-hover': '#28282c',
-        'linear-text': '#f7f8f8',
-        'linear-text-secondary': '#d0d6e0',
-        'linear-text-tertiary': '#8a8f98',
-        'linear-text-muted': '#62666d',
-        'linear-brand': '#5e6ad2',
-        'linear-brand-hover': '#828fff',
-        'linear-success': '#10b981',
-        'linear-border': 'rgba(255,255,255,0.08)',
-        'linear-border-subtle': 'rgba(255,255,255,0.05)'
+        // Paleta "Videoclub" del Tique de Barrio — ver docs/Decisiones visuales/
+        // "Paleta y tipografía del Tique de Barrio".
+        'tique-counter': '#3d1f3a',
+        'tique-counter-dark': '#2c1729',
+        'tique-paper': '#f2e3da',
+        'tique-ink': '#2c2417',
+        'tique-muted': '#6a5c46',
+        'tique-muted-onbrand': '#cbb9c8',
+        'tique-border': '#d4b8bd',
+        'tique-accent': '#a02f5e',
+        'tique-accent-hover': '#7d2247',
+        'tique-teal': '#4fd6c0',
+        'tique-pill-best': '#2f7d74',
+        'tique-pill': '#8a6c80'
       },
       fontFamily: {
-        sans: ['"Inter Variable"', 'system-ui', 'sans-serif'],
-        mono: ['"Berkeley Mono"', 'ui-monospace', 'monospace']
+        sans: ['"Space Mono"', 'ui-monospace', 'monospace'],
+        mono: ['"Space Mono"', 'ui-monospace', 'monospace'],
+        display: ['"Luckiest Guy"', 'cursive']
       }
     },
   },
   plugins: [],
 }
-

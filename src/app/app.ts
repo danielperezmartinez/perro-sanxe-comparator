@@ -1,5 +1,5 @@
 import { Component, signal, resource, inject, ChangeDetectionStrategy, PLATFORM_ID, effect } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
+import { DatePipe, isPlatformBrowser } from '@angular/common';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { SupabaseService, ArticuloResult } from './core/services/supabase';
 import { ProvinceSelect } from './shared/components/province-select/province-select';
@@ -12,20 +12,24 @@ const PROVINCIAS = [
 
 @Component({
   selector: 'app-root',
-  imports: [ScrollingModule, ProvinceSelect, SearchInput, ResultRow],
+  imports: [ScrollingModule, DatePipe, ProvinceSelect, SearchInput, ResultRow],
   templateUrl: './app.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
-    class: 'block min-h-screen bg-linear-bg text-linear-text font-sans'
-  }
+    class: 'block min-h-screen bg-tique-counter font-sans',
+  },
 })
 export class App {
   private supabaseService = inject(SupabaseService);
   private platformId = inject(PLATFORM_ID);
-  
+
   searchQuery = signal<string>('');
   selectedProvincia = signal<string>('NACIONAL');
   provincias = PROVINCIAS;
+
+  // Fecha impresa en la cabecera del tique; se fija una vez por render, no se
+  // evalúa en la plantilla (ver docs/README.md, regla sobre `new Date()`).
+  readonly today = new Date();
 
   constructor() {
     if (isPlatformBrowser(this.platformId)) {
@@ -52,7 +56,7 @@ export class App {
       const q = this.searchQuery();
       const p = this.selectedProvincia();
       if (!q || q.length < 2) return [];
-      
+
       const results = await this.supabaseService.searchArticulos(q);
       return results.filter(r => r.provincia === p || r.provincia === 'NACIONAL').sort((a, b) => a.precio_por_unidad - b.precio_por_unidad);
     }
@@ -68,7 +72,7 @@ export class App {
             });
             const data = await res.json();
             let province = data.address?.province || data.address?.county || data.address?.state;
-            
+
             if (province) {
               // Map Nominatim output to our PROVINCIAS array
               const match = PROVINCIAS.find(p => province.toLowerCase().includes(p.toLowerCase()));

@@ -1,8 +1,9 @@
 ---
 Número: 1
-Estado: Aceptada
+Estado: Reemplazada
 Ámbito: Tokens
 Resumen: Paleta "Videoclub" (morado berenjena + sello magenta + verde azulado) y pareja tipográfica Luckiest Guy / Space Mono para el rediseño "Tique de Barrio", en sustitución completa del theme oscuro inspirado en Linear.
+Reemplazada por: "[[Ajuste de contraste AA de la paleta Videoclub]]"
 Decisión: |
   Se sustituye la paleta y tipografía inspiradas en Linear (documentadas de forma
   informal en `.gemini/DESIGN.md`: Inter Variable, negro casi puro, indigo
@@ -59,6 +60,12 @@ Fecha de creación: 2026-08-22T20:00:00+02:00
 ---
 
 # Paleta y tipografía del Tique de Barrio
+
+> **Reemplazada por [[Ajuste de contraste AA de la paleta Videoclub]]**: dos
+> colores de texto (`tique-muted`, `tique-accent`) no llegaban al contraste
+> WCAG AA sobre el papel del tique y se oscurecieron. El resto de esta
+> decisión (tipografías, resto de la paleta) sigue vigente tal cual, repetido
+> en la nota que la reemplaza.
 
 ## Contexto
 

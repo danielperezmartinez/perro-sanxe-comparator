@@ -3,34 +3,30 @@ import { ChangeDetectionStrategy, Component, input, output } from '@angular/core
 @Component({
   selector: 'app-province-select',
   template: `
-    <div
-      class="flex items-center gap-3 bg-white/5 border border-linear-border px-3 py-1.5 rounded-md shadow-[0_1.2px_0_rgba(0,0,0,0.03)]"
-    >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        class="h-4 w-4 text-linear-text-tertiary"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-        />
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-      </svg>
-      <select
-        [value]="selected()"
-        (change)="provinciaChange.emit($any($event.target).value)"
-        class="bg-transparent text-sm font-medium text-linear-text-secondary focus:outline-none appearance-none cursor-pointer"
-        aria-label="Seleccionar Provincia"
-      >
-        @for (prov of provincias(); track prov) {
-          <option [value]="prov" class="bg-linear-panel text-linear-text">{{ prov }}</option>
-        }
-      </select>
+    <div class="flex items-center gap-2">
+      <span class="text-[10px] font-bold text-tique-ink whitespace-nowrap">TIENDA:</span>
+      <div class="relative flex-grow">
+        <select
+          [value]="selected()"
+          (change)="provinciaChange.emit($any($event.target).value)"
+          class="w-full min-h-[40px] bg-white border-2 border-tique-ink pl-2.5 pr-7 text-xs font-bold text-tique-ink font-mono appearance-none cursor-pointer"
+          aria-label="Seleccionar Provincia"
+        >
+          @for (prov of provincias(); track prov) {
+            <option [value]="prov">{{ prov }}</option>
+          }
+        </select>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-3 w-3 text-tique-ink absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="3"
+        >
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6" />
+        </svg>
+      </div>
     </div>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
