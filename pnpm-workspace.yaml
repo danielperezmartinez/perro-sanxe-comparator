@@ -1,0 +1,13 @@
+packages:
+  - "."
+
+# Por defecto pnpm bloquea los lifecycle scripts (preinstall/install/postinstall)
+# de las dependencias, para evitar ejecución de código no auditado durante la
+# instalación (ver docs/README.md, sección "1. Gestor de paquetes y su
+# política"). Solo se permiten aquí, de forma explícita, los paquetes cuyo
+# script de build es necesario para el toolchain de Angular/Vite/Vitest.
+allowBuilds:
+  esbuild: true # bundler usado por @angular/build
+  "@parcel/watcher": true # watcher nativo usado por sass/vite en modo dev/watch
+  lmdb: true # caché persistente de @angular/build
+  msgpackr-extract: true # acelerador nativo de msgpackr, usado por lmdb
