@@ -1,0 +1,91 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: "IBM Plex Sans", system-ui, sans-serif; background: #f5f6f8; }
+    a { color: #2456c9; } a:hover { color: #1a3f9c; }
+  </style>
+</helmet>
+
+<div style="width: 360px; min-height: 900px; background: #f5f6f8; padding: 0;">
+
+  <div style="background: #ffffff; border-bottom: 1px solid #e2e5ea; padding: 16px 18px; display: flex; align-items: center; justify-content: space-between;">
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <div style="width: 26px; height: 26px; border-radius: 6px; background: #2456c9; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 600; font-size: 13px;">PS</div>
+      <span style="font-weight: 600; font-size: 14px; color: #1a1d24;">Perro Sanxe</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 4px; border: 1px solid #d7dbe2; border-radius: 6px; padding: 5px 8px; font-size: 11px; color: #4a4f5a;">
+      Madrid
+      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+    </div>
+  </div>
+
+  <div style="padding: 20px 18px 8px 18px;">
+    <div style="font-size: 13px; color: #4a4f5a; margin-bottom: 18px; line-height: 1.5;">Compara precios. Sin sorpresas.</div>
+
+    <label style="font-size: 11px; font-weight: 500; color: #6b7280; display: block; margin-bottom: 6px;">Buscar artículo</label>
+    <div style="display: flex; align-items: center; gap: 8px; border: 1.5px solid #2456c9; border-radius: 8px; padding: 10px 12px; background: #fff;">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+      <span style="font-size: 13px; color: #1a1d24;">leche entera</span>
+    </div>
+  </div>
+
+  <div style="padding: 14px 18px 4px 18px; display: flex; justify-content: space-between; font-size: 11px; color: #6b7280;">
+    <span>3 resultados</span>
+    <span>Ordenado por €/unidad</span>
+  </div>
+
+  <div style="margin: 8px 18px 0 18px; background: #ffffff; border: 1px solid #e2e5ea; border-radius: 10px; overflow: hidden;">
+
+    <div style="display: grid; grid-template-columns: minmax(0,1fr) 56px; gap: 8px; padding: 8px 14px; background: #f8f9fb; border-bottom: 1px solid #e2e5ea; font-size: 10px; font-weight: 600; color: #8a8f99; letter-spacing: 0.3px;">
+      <span>PRODUCTO</span>
+      <span style="text-align: right;">PRECIO</span>
+    </div>
+
+    <div style="display: grid; grid-template-columns: minmax(0,1fr) 56px; gap: 8px; padding: 12px 14px; border-bottom: 1px solid #eef0f3; border-left: 3px solid #2456c9; background: #f6f8fe;">
+      <div>
+        <div style="font-size: 13px; font-weight: 500; color: #1a1d24;">Leche entera Pascual 1L</div>
+        <div style="font-size: 10px; color: #6b7280; margin-top: 3px;">Mercadona · Lácteos · Hoy</div>
+      </div>
+      <div style="text-align: right;">
+        <div style="font-size: 15px; font-weight: 600; color: #1a1d24;">0,95€</div>
+        <div style="font-size: 10px; color: #2456c9; font-weight: 500;">0,95€/L</div>
+      </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: minmax(0,1fr) 56px; gap: 8px; padding: 12px 14px; border-bottom: 1px solid #eef0f3;">
+      <div>
+        <div style="font-size: 13px; font-weight: 500; color: #1a1d24;">Aceite oliva virgen extra 1L</div>
+        <div style="font-size: 10px; color: #6b7280; margin-top: 3px;">Carrefour · Aceites · Hace 2 días</div>
+      </div>
+      <div style="text-align: right;">
+        <div style="font-size: 15px; font-weight: 600; color: #1a1d24;">6,49€</div>
+        <div style="font-size: 10px; color: #6b7280;">6,49€/L</div>
+      </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: minmax(0,1fr) 56px; gap: 8px; padding: 12px 14px;">
+      <div>
+        <div style="font-size: 13px; font-weight: 500; color: #1a1d24;">Pan de molde integral 460g</div>
+        <div style="font-size: 10px; color: #6b7280; margin-top: 3px;">Consum · Panadería · Hoy</div>
+      </div>
+      <div style="text-align: right;">
+        <div style="font-size: 15px; font-weight: 600; color: #1a1d24;">1,35€</div>
+        <div style="font-size: 10px; color: #6b7280;">2,93€/kg</div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+</x-dc>
+</body>
+</html>

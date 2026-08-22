@@ -1,0 +1,127 @@
+<div class="min-h-screen bg-linear-bg text-linear-text font-sans pb-10">
+  
+  <!-- Header -->
+  <header class="sticky top-0 z-50 bg-[#0f1011]/80 backdrop-blur-md border-b border-linear-border-subtle py-4 px-6 md:px-12 flex flex-col md:flex-row justify-between items-center gap-4">
+    <div class="flex items-center gap-3">
+      <div class="w-8 h-8 rounded bg-linear-brand flex items-center justify-center text-white font-bold text-xl shadow-[0_0_15px_rgba(94,106,210,0.5)]">
+        P
+      </div>
+      <h1 class="text-xl font-semibold tracking-[-0.24px]">Perro Sanxe Comparator</h1>
+    </div>
+
+    <!-- Location Selector -->
+    <div class="flex items-center gap-3 bg-white/5 border border-linear-border px-3 py-1.5 rounded-md shadow-[0_1.2px_0_rgba(0,0,0,0.03)]">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-linear-text-tertiary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+      </svg>
+      <select 
+        [ngModel]="selectedProvincia()" 
+        (ngModelChange)="selectedProvincia.set($event)"
+        class="bg-transparent text-sm font-medium text-linear-text-secondary focus:outline-none appearance-none cursor-pointer"
+        aria-label="Seleccionar Provincia">
+        @for (prov of provincias; track prov) {
+          <option [value]="prov" class="bg-linear-panel text-linear-text">{{ prov }}</option>
+        }
+      </select>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-4xl mx-auto mt-16 px-4 md:px-0">
+    
+    <!-- Hero Search -->
+    <section class="text-center mb-12">
+      <h2 class="display text-5xl md:text-6xl text-linear-text mb-4">Compara precios.<br/><span class="text-linear-text-tertiary">Sin sorpresas.</span></h2>
+      <p class="text-linear-text-secondary text-lg mb-8 max-w-2xl mx-auto leading-relaxed">
+        Encuentra el supermercado más barato en tu provincia en tiempo real.
+      </p>
+
+      <!-- Search Input -->
+      <div class="relative max-w-2xl mx-auto">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 absolute left-4 top-1/2 transform -translate-y-1/2 text-linear-text-tertiary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+        <input 
+          type="text" 
+          [ngModel]="searchQuery()" 
+          (ngModelChange)="onSearchChange($event)"
+          placeholder="Buscar un artículo (ej. leche entera, aceite...)" 
+          class="linear-input pl-12 py-4 text-lg bg-[#191a1b] border-linear-border-subtle shadow-[0_0_12px_rgba(0,0,0,0.2)_inset]"
+          aria-label="Buscar artículo"
+        />
+      </div>
+    </section>
+
+    <!-- Results Section -->
+    <section class="mt-8">
+      
+      <!-- Loading State -->
+      @if (searchResults.isLoading()) {
+        <div class="flex justify-center py-12">
+          <div class="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-linear-brand"></div>
+        </div>
+      }
+
+      <!-- Empty State -->
+      @if (!searchResults.isLoading() && searchResults.value()?.length === 0 && searchQuery().length >= 2) {
+        <div class="text-center py-16 bg-[#191a1b] rounded-xl border border-linear-border-subtle">
+          <p class="text-linear-text-secondary">No se han encontrado artículos para "{{ searchQuery() }}" en {{ selectedProvincia() }}.</p>
+        </div>
+      }
+
+      <!-- Results List -->
+      @if (!searchResults.isLoading() && searchResults.value() && searchResults.value()!.length > 0) {
+        <div class="bg-[#191a1b] rounded-xl border border-linear-border-subtle shadow-lg overflow-hidden">
+          
+          <div class="px-6 py-4 border-b border-linear-border-subtle flex justify-between items-center bg-white/[0.02]">
+            <span class="text-sm font-medium text-linear-text-secondary">{{ searchResults.value()?.length }} resultados encontrados</span>
+            <span class="text-xs text-linear-text-tertiary">Ordenado por precio/unidad</span>
+          </div>
+
+          <cdk-virtual-scroll-viewport itemSize="120" class="h-[60vh] w-full custom-scrollbar">
+            <div *cdkVirtualFor="let item of searchResults.value(); let last = last" 
+                 class="flex flex-col md:flex-row gap-4 p-6 hover:bg-white/[0.03] transition-colors"
+                 [class.border-b]="!last"
+                 [class.border-linear-border-subtle]="!last">
+              
+              <!-- Item Image -->
+              <div class="h-20 w-20 flex-shrink-0 bg-white/5 rounded-md border border-linear-border overflow-hidden">
+                <img [src]="item.imagen_url || 'https://placehold.co/100x100?text=Sin+Imagen'" [alt]="item.nombre" class="w-full h-full object-cover mix-blend-luminosity opacity-80" loading="lazy" />
+              </div>
+              
+              <!-- Item Details -->
+              <div class="flex-grow flex flex-col justify-between">
+                <div>
+                  <div class="flex items-center gap-2 mb-1">
+                    <span class="px-2 py-0.5 rounded text-[10px] uppercase tracking-wider font-semibold border"
+                          [class.border-[#23252a]]="true"
+                          [class.text-linear-text-secondary]="true">
+                      {{ item.supermercado }}
+                    </span>
+                    <span class="text-xs text-linear-text-tertiary">{{ item.categoria }}</span>
+                  </div>
+                  <h3 class="text-lg font-medium text-linear-text">{{ item.nombre }}</h3>
+                </div>
+              </div>
+
+              <!-- Price Details -->
+              <div class="flex flex-col items-end justify-center md:min-w-[140px] text-right">
+                <div class="text-2xl font-bold text-linear-text mb-1">{{ item.precio | currency:'EUR':'symbol':'1.2-2':'es-ES' }}</div>
+                <div class="text-xs text-linear-success font-medium bg-linear-success/10 px-2 py-1 rounded-full border border-linear-success/20">
+                  {{ item.precio_por_unidad | currency:'EUR':'symbol':'1.2-2':'es-ES' }} / ud
+                </div>
+                <div class="text-[10px] text-linear-text-muted mt-2">
+                  Actualizado: {{ item.ultima_actualizacion | date:'shortDate' }}
+                </div>
+              </div>
+
+            </div>
+          </cdk-virtual-scroll-viewport>
+
+        </div>
+      }
+    </section>
+
+  </main>
+</div>

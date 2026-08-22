@@ -1,0 +1,21 @@
+{
+  "artboards": [
+    { "file": "Main.dc.html", "x": 0, "y": 0, "w": 420, "h": 920, "title": "Móvil", "page": "page-1" },
+    { "file": "Desktop.dc.html", "x": 480, "y": 0, "w": 1440, "h": 900, "title": "Escritorio", "page": "page-1" },
+    { "file": "MercadoFresco.dc.html", "x": 0, "y": 0, "w": 372, "h": 920, "title": "Mercado fresco (descartada)", "page": "page-2" },
+    { "file": "PanelDatos.dc.html", "x": 452, "y": 0, "w": 372, "h": 920, "title": "Panel de datos claro (descartada)", "page": "page-2" },
+    { "file": "EtiquetaPrecio.dc.html", "x": 904, "y": 0, "w": 372, "h": 920, "title": "Etiqueta de precio (descartada)", "page": "page-2" },
+    { "file": "PaletaMercadillo.dc.html", "x": 0, "y": 980, "w": 420, "h": 920, "title": "Paleta Mercadillo (descartada)", "page": "page-2" },
+    { "file": "PaletaBarrio.dc.html", "x": 480, "y": 980, "w": 420, "h": 920, "title": "Paleta Bar de barrio (descartada)", "page": "page-2" }
+  ],
+  "annotations": [
+    { "id": "note-final", "x": 0, "y": -140, "w": 420, "text": "Tique de Barrio — diseño final\nCutre a propósito, no descuidado: papel envejecido con grano, tique ligeramente girado, sello \"MÁS BARATO\" dibujado a mano. Luckiest Guy para la marca y los titulares (la broma); Space Mono para precios y datos (la seriedad). Paleta Videoclub: morado berenjena + sello magenta + verde azulado.", "page": "page-1" },
+    { "id": "note-responsive", "x": 480, "y": -140, "w": 1440, "text": "Estrategia responsive: el tique NUNCA se estira — sigue siendo un tique estrecho (máx. ~380px) en cualquier pantalla, como uno real. En móvil ocupa casi todo el ancho, centrado. En escritorio aparece a la derecha y a la izquierda se abre una columna de marca con el titular grande y el eslogan (aquí en cian neón, guiño VHS) — así se aprovecha el espacio extra sin romper la metáfora ni estirar el contenido.", "page": "page-1" },
+    { "id": "note-descartadas", "x": 0, "y": -110, "w": 900, "text": "Exploraciones descartadas — tres direcciones de estilo de la primera ronda y dos paletas de color alternativas para el Tique de Barrio. Se conservan por si se quiere retomar algún detalle; el diseño final (morado Videoclub) está en la página \"Diseño final\".", "page": "page-2" }
+  ],
+  "pages": [
+    { "id": "page-1", "name": "Diseño final" },
+    { "id": "page-2", "name": "Alternativas descartadas" }
+  ],
+  "launch": { "view": "canvas", "page": "page-1" }
+}

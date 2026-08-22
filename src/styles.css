@@ -1,0 +1,69 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    background-color: theme('colors.linear-bg');
+    color: theme('colors.linear-text');
+    font-feature-settings: "cv01", "ss03";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply bg-linear-bg text-linear-text font-sans m-0 p-0;
+  }
+
+  /* Linear typography specific classes */
+  h1, .display-xl {
+    font-size: 4.5rem;
+    font-weight: 510;
+    line-height: 1;
+    letter-spacing: -1.584px;
+  }
+
+  h2, .display-large {
+    font-size: 4rem;
+    font-weight: 510;
+    line-height: 1;
+    letter-spacing: -1.408px;
+  }
+
+  h3, .display {
+    font-size: 3rem;
+    font-weight: 510;
+    line-height: 1;
+    letter-spacing: -1.056px;
+  }
+}
+
+@layer components {
+  .linear-card {
+    @apply bg-white/5 border border-linear-border rounded-lg shadow-[0_0_0_1px_rgba(0,0,0,0.2)];
+  }
+
+  .linear-button-primary {
+    @apply bg-linear-brand text-white px-4 py-2 rounded-md hover:bg-linear-brand-hover transition-colors font-medium text-sm border border-transparent shadow-[0_4px_12px_rgba(0,0,0,0.1)];
+  }
+
+  .linear-button-ghost {
+    @apply bg-[rgba(255,255,255,0.02)] text-[#e2e4e7] px-4 py-2 rounded-md border border-[rgba(36,40,44,1)] hover:bg-white/5 transition-colors font-medium text-sm;
+  }
+
+  .linear-input {
+    @apply bg-[rgba(255,255,255,0.02)] text-linear-text-secondary border border-linear-border px-[14px] py-[12px] rounded-md focus:outline-none focus:border-linear-brand transition-colors w-full;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-linear-surface-hover rounded-full border-2 border-solid border-transparent bg-clip-padding;
+  }
+}

@@ -1,0 +1,92 @@
+import { Component, signal, resource, inject, ChangeDetectionStrategy, PLATFORM_ID, computed, effect } from '@angular/core';
+import { isPlatformBrowser, CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { ScrollingModule } from '@angular/cdk/scrolling';
+import { SupabaseService, ArticuloResult } from './core/services/supabase';
+
+const PROVINCIAS = [
+  'NACIONAL', 'A Coruña', 'Álava', 'Albacete', 'Alicante', 'Almería', 'Asturias', 'Ávila', 'Badajoz', 'Baleares', 'Barcelona', 'Burgos', 'Cáceres', 'Cádiz', 'Cantabria', 'Castellón', 'Ceuta', 'Ciudad Real', 'Córdoba', 'Cuenca', 'Girona', 'Granada', 'Guadalajara', 'Guipúzcoa', 'Huelva', 'Huesca', 'Jaén', 'La Rioja', 'Las Palmas', 'León', 'Lleida', 'Lugo', 'Madrid', 'Málaga', 'Murcia', 'Navarra', 'Ourense', 'Palencia', 'Pontevedra', 'Salamanca', 'Santa Cruz de Tenerife', 'Segovia', 'Sevilla', 'Soria', 'Tarragona', 'Teruel', 'Toledo', 'Valencia', 'Valladolid', 'Vizcaya', 'Zamora', 'Zaragoza'
+];
+
+@Component({
+  selector: 'app-root',
+  standalone: true,
+  imports: [CommonModule, FormsModule, ScrollingModule],
+  templateUrl: './app.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  host: {
+    class: 'block min-h-screen bg-linear-bg text-linear-text font-sans'
+  }
+})
+export class App {
+  private supabaseService = inject(SupabaseService);
+  private platformId = inject(PLATFORM_ID);
+  
+  searchQuery = signal<string>('');
+  selectedProvincia = signal<string>('NACIONAL');
+  provincias = PROVINCIAS;
+
+  constructor() {
+    if (isPlatformBrowser(this.platformId)) {
+      const stored = localStorage.getItem('provincia');
+      if (stored && PROVINCIAS.includes(stored)) {
+        this.selectedProvincia.set(stored);
+      } else {
+        this.initGeolocation();
+      }
+    }
+
+    // Effect to persist province changes
+    effect(() => {
+      const prov = this.selectedProvincia();
+      if (isPlatformBrowser(this.platformId)) {
+        localStorage.setItem('provincia', prov);
+      }
+    });
+  }
+
+  // Define resource for fetching data
+  searchResults = resource<ArticuloResult[], unknown>({
+    loader: async ({ abortSignal }) => {
+      const q = this.searchQuery();
+      const p = this.selectedProvincia();
+      if (!q || q.length < 2) return [];
+      
+      const results = await this.supabaseService.searchArticulos(q);
+      return results.filter(r => r.provincia === p || r.provincia === 'NACIONAL').sort((a, b) => a.precio_por_unidad - b.precio_por_unidad);
+    }
+  });
+
+  private async initGeolocation() {
+    if ('geolocation' in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          try {
+            const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${position.coords.latitude}&lon=${position.coords.longitude}&format=json`, {
+               headers: { 'User-Agent': 'perro-sanxe-comparator' }
+            });
+            const data = await res.json();
+            let province = data.address?.province || data.address?.county || data.address?.state;
+            
+            if (province) {
+              // Map Nominatim output to our PROVINCIAS array
+              const match = PROVINCIAS.find(p => province.toLowerCase().includes(p.toLowerCase()));
+              if (match) {
+                this.selectedProvincia.set(match);
+              }
+            }
+          } catch (e) {
+            console.error('Error in reverse geocoding', e);
+          }
+        },
+        (error) => {
+          console.warn('Geolocation denied or failed', error);
+        }
+      );
+    }
+  }
+
+  onSearchChange(value: string) {
+    this.searchQuery.set(value);
+  }
+}
