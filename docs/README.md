@@ -329,6 +329,13 @@ completo.
 `precio` o el `precio_por_unidad` han cambiado respecto al último registro del
 mismo artículo y provincia.
 
+**Seguridad (RLS):** RLS está activo en `articulos` y `precios_historico`.
+Los roles `anon`/`authenticated` (el cliente, con la clave anon/publishable)
+solo tienen `SELECT`; la escritura (scraping) se hace con la clave
+`service_role`, que salta RLS. Cualquier tabla nueva expuesta a PostgREST
+debe seguir el mismo patrón: RLS activo desde el primer momento, con una
+política de lectura explícita en vez de dejarla sin RLS.
+
 ### Lógica de scraping
 
 - Se ejecuta mediante un CRON (Supabase Edge HTTP o GitHub Actions).
