@@ -8,7 +8,7 @@ Decisiones:
   - Frontend: la búsqueda se dispara desde un signal derivado con debounce (`toObservable(searchQuery) |> debounceTime(300) |> toSignal`), no desde searchQuery directo. RxJS aquí es interop puntual permitido por docs/README.md. El resource pasa su abortSignal a supabase-js (`.abortSignal()`) para cancelar la petición en vuelo cuando una búsqueda más nueva la sustituye. Se mantiene el guard de mín. 2 caracteres.
 Bloqueada: []
 Fecha de creación: 2026-08-23T14:05:00+02:00
-Última modificación: 2026-08-23T14:06:40+02:00
+Última modificación: 2026-08-23T14:10:00+02:00
 ---
 
 # Mejorar la relevancia del buscador y evitar peticiones por letra
@@ -68,14 +68,11 @@ debounce.
   devuelve los 6 relevantes (MCP Supabase).
 - `pnpm test` en verde (11/11). `pnpm build` (SSR) compila correctamente (queda
   el aviso de budget de bundle previo, no relacionado).
-- **Pendiente:** verificación en navegador real del debounce/cancelación y, si
-  el usuario lo pide, despliegue en Vercel (subir versión SemVer antes de
-  pushear, según docs/README.md).
+- Verificado en navegador real por el usuario (debounce/cancelación y calidad
+  de resultados). Tarea cerrada como Hecha.
 
-## Pendiente / siguiente iteración
+## Siguiente iteración (opcional)
 
-- **Comparación por grupos (B).** Decidir si se agrupan resultados por una
-  categoría normalizada entre supers para comparar "peras con peras". Requiere
-  un mapa Mercadona<->Consum o una `categoria_norm` propia guardada al scrapear.
-  El usuario eligió "decidir después" tras ver el efecto de la mejora de
-  relevancia. Ver también [[Cerrar RLS abierto en Supabase y arreglar el buscador roto]].
+- **Comparación por grupos (opción B).** Movida a su propia tarea para
+  implementar solo si el usuario detecta el problema en el futuro:
+  [[Agrupar resultados por categoría normalizada para comparar entre supermercados]].

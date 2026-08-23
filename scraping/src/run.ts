@@ -14,6 +14,7 @@
 import { BATCH_SIZE, PROVINCIA_DEFECTO } from './config.ts';
 import { mercadona } from './supers/mercadona.ts';
 import { consum } from './supers/consum.ts';
+import { dia } from './supers/dia.ts';
 import { carrefour } from './supers/carrefour.ts';
 import type { NormalizedArticulo, SuperIngester } from './supers/types.ts';
 import { SupabaseWriter, nuevasStats } from './sink/supabase-writer.ts';
@@ -21,13 +22,14 @@ import { SupabaseWriter, nuevasStats } from './sink/supabase-writer.ts';
 const INGESTERS: Record<string, SuperIngester> = {
   mercadona,
   consum,
+  dia,
   carrefour,
 };
 
 // Supers que corren cuando no se especifica --super (los implementados).
 // Carrefour queda fuera a propósito hasta implementarlo, para que el run diario
 // no se marque en rojo por su stub; sigue siendo invocable con --super=carrefour.
-const DEFAULT_SUPERS = ['mercadona', 'consum'];
+const DEFAULT_SUPERS = ['mercadona', 'consum', 'dia'];
 
 interface Args {
   supers: string[];

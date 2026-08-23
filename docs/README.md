@@ -367,9 +367,11 @@ política de lectura explícita en vez de dejarla sin RLS.
   vive en `scraping/` (Node ≥24, TS nativo) y el workflow en
   `.github/workflows/scrape.yml`. Ver `scraping/README.md` y
   [[Tareas/Implementar la ingesta real de precios (Mercadona, Consum, Carrefour)]].
-- Fuente de datos: APIs JSON internas de cada super. Implementados Mercadona y
-  Consum; Carrefour pendiente (su API responde 403). Escritura con la secret key
-  nueva (`sb_secret_...`) o el `service_role` legacy — la que salta RLS.
+- Fuente de datos: APIs JSON internas de cada super. Implementados Mercadona,
+  Consum y Dia; Carrefour pendiente (su API responde 403). Otros supermercados
+  estudiados en [[Tareas/Ampliar el scraping con más supermercados de API pública (estudio Dia, Lidl, Alcampo, etc)]].
+  Escritura con la secret key nueva (`sb_secret_...`) o el `service_role`
+  legacy — la que salta RLS.
 - Parámetro `localidad` (opcional): si se recibe, scrapear solo esa provincia;
   si no, `'NACIONAL'` (MVP).
 - Manejo de errores: reintentos y rotación básica de user-agents.

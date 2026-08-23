@@ -32,7 +32,7 @@ O vía pnpm: `pnpm scrape -- --dry-run --max=50`.
 
 | Flag | Env | Efecto |
 |---|---|---|
-| `--super=a,b` | `SCRAPE_SUPERS` | Supers a ejecutar (por defecto: los implementados, `mercadona,consum`). Carrefour solo si se pide explícitamente. |
+| `--super=a,b` | `SCRAPE_SUPERS` | Supers a ejecutar (por defecto: los implementados, `mercadona,consum,dia`). Carrefour solo si se pide explícitamente. |
 | `--localidad=X` | `SCRAPE_LOCALIDAD` | Provincia (por defecto `NACIONAL`). |
 | `--dry-run` | `SCRAPE_DRY_RUN=1` | No escribe en Supabase; solo cuenta. |
 | `--max=N` | `SCRAPE_MAX_ITEMS` | Tope de artículos por super (0 = sin tope). |
@@ -63,6 +63,7 @@ O vía pnpm: `pnpm scrape -- --dry-run --max=50`.
 |---|---|---|
 | Mercadona | ✅ | `tienda.mercadona.es/api/categories/` |
 | Consum | ✅ | `tienda.consum.es/api/rest/V1.0/catalog/product` |
+| Dia | ✅ | `dia.es/api/v1/plp-back/l1/all/{L1}/reduced?category_id={L1}&page=` |
 | Carrefour | ⛔ pendiente | endpoints dan 403 (anti-bot); requiere recon propio |
 
 ## Regla de oro
