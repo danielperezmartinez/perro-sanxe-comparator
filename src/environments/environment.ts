@@ -2,6 +2,9 @@ export const environment = {
   production: false,
   supabase: {
     url: 'https://wvzrilklvpaqzvehwyya.supabase.co',
-    key: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind2enJpbGtsdnBhcXp2ZWh3eXlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNTkyNjksImV4cCI6MjA5MTkzNTI2OX0.zZOr2KqMOnmI1JwJKS4Ldgami2E54-y1s2xNyciBV1E'
+    // Publishable key (sb_publishable_...) del sistema nuevo de API keys. Es
+    // pública por diseño (respeta RLS) y se commitea, igual que la anon legacy
+    // anterior. Sustituye a la anon JWT para poder desactivar las claves legacy.
+    key: 'sb_publishable_SuCdevWBR8vZ-8IKgQ4Pgg_uuFC7bDG'
   }
 };
