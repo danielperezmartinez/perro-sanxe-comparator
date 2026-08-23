@@ -8,6 +8,7 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
+    "scrape": "node scraping/src/run.ts",
     "serve:ssr:perro-sanxe-comparator": "node dist/perro-sanxe-comparator/server/server.mjs"
   },
   "private": true,

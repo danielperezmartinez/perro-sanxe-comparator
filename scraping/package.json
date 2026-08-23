@@ -1,0 +1,6 @@
+{
+  "//": "Solo fija el tipo de módulo para el scraper (ESM), sin afectar al build de Angular en la raíz. No es un paquete de workspace (pnpm-workspace.yaml solo incluye '.').",
+  "name": "perro-sanxe-scraping",
+  "private": true,
+  "type": "module"
+}

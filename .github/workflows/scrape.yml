@@ -1,0 +1,50 @@
+name: Scraping de precios
+
+on:
+  schedule:
+    # Diario a las 05:00 UTC (07:00 CEST). Ajustar si hace falta.
+    - cron: '0 5 * * *'
+  workflow_dispatch:
+    inputs:
+      super:
+        description: 'Supers coma-separados (vacío = todos). Ej: mercadona,consum'
+        required: false
+        default: ''
+      localidad:
+        description: 'Provincia (vacío = NACIONAL)'
+        required: false
+        default: ''
+
+concurrency:
+  group: scraping
+  cancel-in-progress: false
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Habilitar pnpm (Corepack)
+        run: corepack enable
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Instalar dependencias
+        run: pnpm install --frozen-lockfile
+
+      - name: Ejecutar scraping
+        run: node scraping/src/run.ts
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          # Clave que salta RLS. Usa la secret key nueva (sb_secret_...); se
+          # acepta también el service_role legacy por compatibilidad. Un secreto
+          # no definido llega como cadena vacía y el script usa el otro.
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          SCRAPE_SUPERS: ${{ github.event.inputs.super }}
+          SCRAPE_LOCALIDAD: ${{ github.event.inputs.localidad }}

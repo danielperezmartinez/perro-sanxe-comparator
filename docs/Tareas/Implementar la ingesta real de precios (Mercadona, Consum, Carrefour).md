@@ -1,0 +1,79 @@
+---
+Nombre: Implementar la ingesta real de precios (Mercadona, Consum, Carrefour)
+Estado: En curso
+Resumen: Construir el sistema de recolección de datos real (hasta ahora inexistente en código; la BD solo tenía 4 artículos y ~9k precios falsos de demo). Scraping vía las APIs JSON internas de los supermercados, ejecutado por un CRON en GitHub Actions, escribiendo con la clave service_role y aplicando la regla de oro. Mercadona y Consum implementados; Carrefour pendiente (su API responde 403, protección anti-bot).
+Decisiones:
+  - Fuente de datos: APIs JSON internas de cada super (no HTML). Mercadona (tienda.mercadona.es/api) y Consum (tienda.consum.es/api/rest/V1.0) confirmadas accesibles y mapeadas; Carrefour da 403 y necesita recon propio.
+  - Ejecución en GitHub Actions (no Supabase Edge), con secretos SUPABASE_URL y SUPABASE_SERVICE_ROLE_KEY. Parámetro localidad opcional vía workflow_dispatch.
+  - Clave natural del artículo: nueva columna articulos.external_id (la SKU del super) + índice único parcial (supermercado, external_id). Cambio de esquema en la migración 001.
+  - Provincia: para el MVP toda la ingesta se registra como 'NACIONAL'; el desglose por provincia/almacén queda para después.
+  - Datos de demo (4 artículos + ~9k precios aleatorios) se eliminan (migración 002) al entrar la ingesta real (aprobado por el usuario, es destructivo).
+  - Runtime del scraper: TypeScript ejecutado nativamente por Node >=24 (type stripping) con fetch global; sin dependencias nuevas (solo @supabase/supabase-js, ya presente) y sin tocar allowBuilds de pnpm.
+Bloqueada: []
+Fecha de creación: 2026-08-22T21:30:00+02:00
+Última modificación: 2026-08-23T00:30:00+02:00
+---
+
+# Implementar la ingesta real de precios (Mercadona, Consum, Carrefour)
+
+## Objetivo
+
+Hacer funcionar la recolección de datos, que la documentación (`docs/README.md`,
+sección "Lógica de scraping") describía como arquitectura objetivo pero que **no
+existía en código**. La base de datos solo contenía datos de demo: 4 artículos
+con imágenes `placehold.co` y ~9.154 filas de `precios_historico` con precios
+aleatorios. El buscador y RLS ya estaban hechos (ver
+[[Cerrar RLS abierto en Supabase y arreglar el buscador roto]]); faltaba toda la
+tubería de ingesta.
+
+## Alcance
+
+1. **Migración de esquema** (`scraping/sql/001_...`): columna `articulos.external_id`
+   (SKU del super) + índice único parcial `(supermercado, external_id)`, y RPC
+   `ultimos_precios(p_articulo_ids uuid[], p_provincia text)` con `DISTINCT ON`
+   para resolver la regla de oro en una sola llamada por lote.
+2. **Limpieza de demo** (`scraping/sql/002_...`, destructivo, aprobado): vacía
+   `articulos` y `precios_historico`.
+3. **Tubería de scraping** en `scraping/` (Node 24 + TS nativo, `fetch` global):
+   - `src/supers/mercadona.ts`, `consum.ts` — ingesters implementados.
+   - `src/supers/carrefour.ts` — stub; recon pendiente (403).
+   - `src/sink/supabase-writer.ts` — upsert de `articulos` + regla de oro sobre
+     `precios_historico` con la clave `service_role`.
+   - `src/http.ts` — `fetchJson` con reintentos + rotación de user-agents.
+   - `src/run.ts` — orquestador (`--super`, `--localidad`, `--dry-run`), dedup
+     por `(supermercado, external_id)`.
+4. **GitHub Actions** (`.github/workflows/scrape.yml`): CRON diario +
+   `workflow_dispatch` con inputs `super`/`localidad`.
+
+## Estado / pendiente
+
+- [x] Recon y mapeo de Mercadona y Consum.
+- [x] Migración 001 aplicada en Supabase vía MCP (external_id + índice único NO
+      parcial + RPC `ultimos_precios`).
+- [x] Limpieza de demo aplicada (borrado acotado `external_id IS NULL`, no
+      truncate): BD queda solo con datos reales.
+- [x] Ingesters Mercadona y Consum, writer, orquestador, workflow.
+- [x] Regla de oro y contratos de BD verificados contra producción real.
+- [ ] Dar de alta en GitHub los secretos `SUPABASE_URL` y
+      `SUPABASE_SERVICE_ROLE_KEY` y lanzar la primera ejecución completa del
+      workflow (poblará el catálogo entero; el writer no puede correr en local
+      sin el service_role, que el MCP no expone).
+- [ ] Carrefour: recon de su API (403 anti-bot) e implementación.
+- [ ] (Futuro) desglose por provincia en vez de 'NACIONAL'.
+
+## Verificación
+
+- Dry-run local de Mercadona y Consum (fetch + normalización): OK. Mapeo de
+  precios correcto con datos reales — Mercadona Aceite 5L → precio 17.75 € (PVP)
+  / precio_por_unidad 3.55 €/L; Consum Rabanito → 1.15 € / 4.60 €/kg.
+- `tsc --noEmit` sobre `scraping/tsconfig.json`: exit 0.
+- **Contra producción (MCP):** insertados 6 artículos reales ejercitando el
+  mismo contrato del writer (`ON CONFLICT (supermercado, external_id)` + RPC
+  `ultimos_precios` + regla de oro). Reejecución idéntica → 0 precios nuevos;
+  con un precio alterado → 1 cambio detectado. Índice único recreado NO parcial
+  (un índice parcial NO es inferible por el `ON CONFLICT` sin WHERE que genera
+  supabase-js, habría roto el upsert). `search_articulos_laxo('aceite')`
+  devuelve los artículos reales con sus precios. `get_advisors` security: solo
+  WARN preexistentes; `ultimos_precios` sin advisory (search_path fijo).
+- Nota: los 3 artículos de Mercadona y 3 de Consum de la prueba tienen
+  `imagen_url` de marcador; el primer run real los corrige por upsert.
