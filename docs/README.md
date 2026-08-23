@@ -327,7 +327,12 @@ completo.
 
 **Regla de oro:** solo insertar un nuevo registro en `precios_historico` si el
 `precio` o el `precio_por_unidad` han cambiado respecto al último registro del
-mismo artículo y provincia.
+mismo artículo y provincia. Esta regla está **garantizada a nivel de base de
+datos** por el trigger `BEFORE INSERT` `trg_check_price_change` (función
+`public.check_price_change`), que descarta el insert (`RETURN NULL`) si ni
+`precio` ni `precio_por_unidad` cambian respecto al último registro. El scraper
+además la comprueba antes de insertar (RPC `ultimos_precios`) como optimización
+para no enviar escrituras inútiles; ambos criterios son consistentes.
 
 **Seguridad (RLS):** RLS está activo en `articulos` y `precios_historico`.
 Los roles `anon`/`authenticated` (el cliente, con la clave anon/publishable)
@@ -338,11 +343,22 @@ política de lectura explícita en vez de dejarla sin RLS.
 
 ### Lógica de scraping
 
-- Se ejecuta mediante un CRON (Supabase Edge HTTP o GitHub Actions).
+- **Decidido: se ejecuta mediante GitHub Actions** (no Supabase Edge). El código
+  vive en `scraping/` (Node ≥24, TS nativo) y el workflow en
+  `.github/workflows/scrape.yml`. Ver `scraping/README.md` y
+  [[Tareas/Implementar la ingesta real de precios (Mercadona, Consum, Carrefour)]].
+- Fuente de datos: APIs JSON internas de cada super. Implementados Mercadona y
+  Consum; Carrefour pendiente (su API responde 403). Escritura con la secret key
+  nueva (`sb_secret_...`) o el `service_role` legacy — la que salta RLS.
 - Parámetro `localidad` (opcional): si se recibe, scrapear solo esa provincia;
-  si no, ejecutar scraping secuencial por las provincias principales.
-- Manejo de errores: reintentos y rotación básica de user-agents para evitar
-  bloqueos.
+  si no, `'NACIONAL'` (MVP).
+- Manejo de errores: reintentos y rotación básica de user-agents.
+- **Sistema demo retirado:** existía una Edge Function `scraper` (simulador que
+  insertaba 4 productos falsos con precios `Math.random()`) invocada cada hora
+  por un `pg_cron` (`invoke-scraper-every-hour`). Ese `pg_cron` se ha
+  desprogramado (`cron.unschedule`) porque generaba datos falsos que chocaban
+  con la ingesta real. La Edge Function sigue desplegada pero inerte; conviene
+  borrarla desde el dashboard.
 
 ### Funcionalidades del frontend
 

@@ -61,6 +61,26 @@ tubería de ingesta.
 - [ ] Carrefour: recon de su API (403 anti-bot) e implementación.
 - [ ] (Futuro) desglose por provincia en vez de 'NACIONAL'.
 
+## Sistema demo previo descubierto y retirado
+
+Al verificar con la publishable key se descubrió el verdadero "a medias": una
+Edge Function desplegada `scraper` (no en el repo) que era un **simulador**
+(4 productos hardcodeados con precios `Math.random()`, fetch a `example.com`),
+invocada **cada hora** por un `pg_cron` `invoke-scraper-every-hour`
+(`net.http_post` a `/functions/v1/scraper`). Era el origen de los ~9k precios
+falsos. Acciones:
+
+- `pg_cron` desprogramado con `cron.unschedule('invoke-scraper-every-hour')`
+  (el `UPDATE cron.job` directo daba permiso denegado con el rol del MCP).
+- La Edge Function `scraper` sigue desplegada pero ya nadie la invoca; **queda
+  pendiente borrarla desde el dashboard** (el MCP no expone borrado de Edge
+  Functions; además tiene `verify_jwt=false`, o sea es invocable públicamente).
+- Regla de oro: se confirmó que ya existe el trigger BD `trg_check_price_change`
+  (compara `precio` y `precio_por_unidad`), consistente con el writer.
+- Migración del cliente Angular a la publishable key nueva
+  (`sb_publishable_...`) en `environment.ts`, para poder desactivar las claves
+  legacy sin romper la app. Verificada contra la RPC del buscador (HTTP 200).
+
 ## Verificación
 
 - Dry-run local de Mercadona y Consum (fetch + normalización): OK. Mapeo de
