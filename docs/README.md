@@ -238,9 +238,29 @@ con estado.
 ### 3. Versionado y despliegue
 
 - **SemVer** en `package.json`.
-- Despliegue **manual**: `ng build` genera el bundle SSR en
-  `dist/perro-sanxe-comparator/` (`browser/` + `server/`); se sirve en
-  producción con `node dist/perro-sanxe-comparator/server/server.mjs`.
+- **Despliegue automático vía Vercel**: el repo de GitHub
+  (`danielperezmartinez/perro-sanxe-comparator`) está importado en Vercel
+  (proyecto `perro-sanxe-comparator`), que despliega automáticamente en cada
+  `push`. No hay `vercel.json`: Vercel detecta el proyecto Angular en modo
+  zero-config y sí aprovecha el bundle SSR que genera `ng build`
+  (`dist/perro-sanxe-comparator/` con `browser/` + `server/`) — sirve los
+  estáticos de `browser/` desde su CDN y ejecuta `server/server.mjs` como
+  función serverless. El script `serve:ssr:perro-sanxe-comparator`
+  (`node dist/perro-sanxe-comparator/server/server.mjs`) solo se usa para
+  probar el bundle SSR en local; en producción no se ejecuta manualmente.
+- **Protocolo obligatorio cuando el usuario pida hacer deploy/despliegue:**
+  1. Antes de pushear, subir la versión en `package.json` siguiendo SemVer.
+     El tipo de bump se determina a partir de los commits pendientes desde
+     la última versión, según Conventional Commits: algún `feat` → minor;
+     algún `BREAKING CHANGE` o `!` tras el tipo → major; si no hay ninguno
+     de esos y solo hay `fix`/otros tipos → patch.
+  2. Hacer push.
+  3. Comprobar que Vercel ha completado el despliegue correctamente (p. ej.
+     `vercel ls`/`vercel inspect` del proyecto, con la CLI ya autenticada
+     como `devappsdpm`, o el dashboard).
+  4. Si el despliegue falla, informar al usuario de lo ocurrido. **No tomar
+     ninguna acción correctiva ni reintentar nada sin que el usuario lo
+     autorice explícitamente.**
 
 ### 4. Idioma de código y documentación
 

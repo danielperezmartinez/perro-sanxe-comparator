@@ -51,14 +51,16 @@ export class App {
   }
 
   // Define resource for fetching data
-  searchResults = resource<ArticuloResult[], unknown>({
-    loader: async ({ abortSignal }) => {
-      const q = this.searchQuery();
-      const p = this.selectedProvincia();
-      if (!q || q.length < 2) return [];
+  searchResults = resource<ArticuloResult[], { query: string; provincia: string }>({
+    params: () => ({ query: this.searchQuery(), provincia: this.selectedProvincia() }),
+    loader: async ({ params }) => {
+      const { query, provincia } = params;
+      if (!query || query.length < 2) return [];
 
-      const results = await this.supabaseService.searchArticulos(q);
-      return results.filter(r => r.provincia === p || r.provincia === 'NACIONAL').sort((a, b) => a.precio_por_unidad - b.precio_por_unidad);
+      const results = await this.supabaseService.searchArticulos(query);
+      return results
+        .filter(r => r.provincia === provincia || r.provincia === 'NACIONAL')
+        .sort((a, b) => a.precio_por_unidad - b.precio_por_unidad);
     }
   });
 

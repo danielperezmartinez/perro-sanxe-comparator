@@ -1,7 +1,7 @@
 ---
 Nombre: Implementar la ingesta real de precios (Mercadona, Consum, Carrefour)
-Estado: En curso
-Resumen: Construir el sistema de recolección de datos real (hasta ahora inexistente en código; la BD solo tenía 4 artículos y ~9k precios falsos de demo). Scraping vía las APIs JSON internas de los supermercados, ejecutado por un CRON en GitHub Actions, escribiendo con la clave service_role y aplicando la regla de oro. Mercadona y Consum implementados; Carrefour pendiente (su API responde 403, protección anti-bot).
+Estado: Hecha
+Resumen: Construir el sistema de recolección de datos real (hasta ahora inexistente en código; la BD solo tenía 4 artículos y ~9k precios falsos de demo). Scraping vía las APIs JSON internas de los supermercados, ejecutado por un CRON en GitHub Actions, escribiendo con la clave secreta (salta RLS) y aplicando la regla de oro. Mercadona y Consum implementados, verificados y EN PRODUCCIÓN (13.630 artículos reales, 1 precio por artículo, 0 duplicados). Carrefour se separa a su propia tarea [[Implementar la ingesta de Carrefour (API con protección anti-bot)]] porque su API responde 403 y requiere recon propio.
 Decisiones:
   - Fuente de datos: APIs JSON internas de cada super (no HTML). Mercadona (tienda.mercadona.es/api) y Consum (tienda.consum.es/api/rest/V1.0) confirmadas accesibles y mapeadas; Carrefour da 403 y necesita recon propio.
   - Ejecución en GitHub Actions (no Supabase Edge), con secretos SUPABASE_URL y SUPABASE_SERVICE_ROLE_KEY. Parámetro localidad opcional vía workflow_dispatch.
@@ -11,7 +11,7 @@ Decisiones:
   - Runtime del scraper: TypeScript ejecutado nativamente por Node >=24 (type stripping) con fetch global; sin dependencias nuevas (solo @supabase/supabase-js, ya presente) y sin tocar allowBuilds de pnpm.
 Bloqueada: []
 Fecha de creación: 2026-08-22T21:30:00+02:00
-Última modificación: 2026-08-23T00:30:00+02:00
+Última modificación: 2026-08-23T13:00:00+02:00
 ---
 
 # Implementar la ingesta real de precios (Mercadona, Consum, Carrefour)
@@ -54,12 +54,14 @@ tubería de ingesta.
       truncate): BD queda solo con datos reales.
 - [x] Ingesters Mercadona y Consum, writer, orquestador, workflow.
 - [x] Regla de oro y contratos de BD verificados contra producción real.
-- [ ] Dar de alta en GitHub los secretos `SUPABASE_URL` y
-      `SUPABASE_SERVICE_ROLE_KEY` y lanzar la primera ejecución completa del
-      workflow (poblará el catálogo entero; el writer no puede correr en local
-      sin el service_role, que el MCP no expone).
-- [ ] Carrefour: recon de su API (403 anti-bot) e implementación.
-- [ ] (Futuro) desglose por provincia en vez de 'NACIONAL'.
+- [x] Secretos dados de alta en GitHub (`SUPABASE_URL`, `SUPABASE_SECRET_KEY`) y
+      primera ejecución completa del workflow verificada: 13.630 artículos
+      reales (Consum 9.291 + Mercadona 4.339), 1 precio por artículo, 0
+      duplicados, 0 datos demo.
+- [→] Carrefour: separado a su propia tarea
+      [[Implementar la ingesta de Carrefour (API con protección anti-bot)]].
+- [ ] (Futuro) desglose por provincia en vez de 'NACIONAL' — pendiente, fuera
+      del alcance de esta tarea.
 
 ## Sistema demo previo descubierto y retirado
 
@@ -97,3 +99,14 @@ falsos. Acciones:
   WARN preexistentes; `ultimos_precios` sin advisory (search_path fijo).
 - Nota: los 3 artículos de Mercadona y 3 de Consum de la prueba tienen
   `imagen_url` de marcador; el primer run real los corrige por upsert.
+
+## Resultado
+
+Sistema de ingesta **funcionando en producción** para Mercadona y Consum, con
+CRON diario en GitHub Actions (05:00 UTC) + `workflow_dispatch`. Tras la primera
+ejecución completa: 13.630 artículos reales, 1 precio por artículo, sin
+duplicados y sin datos demo. Verificado que un super que falla (Carrefour) no
+impide que los demás completen, y ajustado el run por defecto a
+`mercadona,consum` para que el CRON no se marque en rojo por el stub de
+Carrefour. Actions subidas a v5 (Node 24). Tarea completada; Carrefour continúa
+en [[Implementar la ingesta de Carrefour (API con protección anti-bot)]].

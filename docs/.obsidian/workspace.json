@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Decisiones visuales/Estrategia responsive del tique.md",
-                "mode": "source",
+                "file": "README.md",
+                "mode": "preview",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Estrategia responsive del tique"
+              "title": "README"
             }
           }
         ]
@@ -170,21 +170,31 @@
   },
   "active": "4f9afb5c5ab73d8e",
   "lastOpenFiles": [
-    "Decisiones visuales/Decisiones visuales.base",
+    "README.md.tmp.26264.ab283f15f5ea",
+    "Tareas/Implementar la ingesta de Carrefour (API con protección anti-bot).md",
+    "Tareas/Cerrar RLS abierto en Supabase y arreglar el buscador roto.md.tmp.26264.b9411ad96552",
+    "Tareas/Cerrar RLS abierto en Supabase y arreglar el buscador roto.md.tmp.26264.c85b711676ad",
+    "Tareas/Tareas.base",
+    "Tareas/Implementar la ingesta de Carrefour (API con protección anti-bot).md.tmp.14216.66e290a42e85",
+    "Tareas/Implementar la ingesta de Carrefour (API con protección anti-bot).md.tmp.14216.c650838f1b87",
     "Inicio.md",
+    "README.md",
+    "Tareas/Implementar la ingesta de Carrefour (API con protección anti-bot).md.tmp.14216.75fd52734a57",
+    "Tareas/Implementar la ingesta real de precios (Mercadona, Consum, Carrefour).md",
+    "Tareas/Implementar la ingesta real de precios (Mercadona, Consum, Carrefour).md.tmp.14216.39938fb979a4",
+    "Tareas/Implementar la ingesta real de precios (Mercadona, Consum, Carrefour).md.tmp.14216.2b751d2173cc",
+    "Tareas/Implementar la ingesta real de precios (Mercadona, Consum, Carrefour).md.tmp.14216.9b26c680cd78",
+    "Tareas/Implementar la ingesta real de precios (Mercadona, Consum, Carrefour).md.tmp.14216.98bf2022ee9e",
+    "Catálogo técnico/Ingesta de precios (scraping).md",
+    "Tareas/Cerrar RLS abierto en Supabase y arreglar el buscador roto.md",
+    "Decisiones visuales/Ajuste de contraste AA de la paleta Videoclub.md",
+    "Tareas/Definir arquitectura y normas del proyecto (pnpm, Angular 22 zoneless, Vitest, componentes reutilizables).md",
+    "Catálogo técnico/ResultRow.md",
+    "Catálogo técnico/SearchInput.md",
+    "Catálogo técnico/ProvinceSelect.md",
+    "Decisiones visuales/Estrategia responsive del tique.md",
     "Decisiones visuales/Anatomía del componente tique.md",
     "Decisiones visuales/Paleta y tipografía del Tique de Barrio.md",
-    "Tareas/Implementar el rediseño Tique de Barrio en la app.md",
-    "Tareas/Implementar el rediseño Tique de Barrio en la app.md.tmp.4624.7d52de34d442",
-    "Decisiones visuales/Estrategia responsive del tique.md",
-    "Decisiones visuales/Estrategia responsive del tique.md.tmp.4624.fd66adfcf700",
-    "Decisiones visuales/Anatomía del componente tique.md.tmp.4624.4fca66c0593b",
-    "Decisiones visuales/Paleta y tipografía del Tique de Barrio.md.tmp.4624.927828085972",
-    "Tareas/Tareas.base",
-    "README.md",
-    "Tareas/Completar reglas fundamentales de la bóveda.md.tmp.4624.a3aa0f3de4d0",
-    "Tareas/Completar reglas fundamentales de la bóveda.md.tmp.4624.91dabd67794b",
-    "README.md.tmp.4624.14ea45aeca50",
-    "README.md.tmp.4624.6ceadf8d48cb"
+    "Tareas/Implementar el rediseño Tique de Barrio en la app.md"
   ]
 }
