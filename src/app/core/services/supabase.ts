@@ -24,13 +24,18 @@ export class SupabaseService {
     ? createClient(environment.supabase.url, environment.supabase.key)
     : undefined;
 
-  async searchArticulos(query: string): Promise<ArticuloResult[]> {
+  async searchArticulos(query: string, signal?: AbortSignal): Promise<ArticuloResult[]> {
     if (!this.supabase || !query || query.trim() === '') {
       return [];
     }
 
-    const { data, error } = await this.supabase
-      .rpc('search_articulos_laxo', { search_query: query });
+    let request = this.supabase.rpc('search_articulos_laxo', { search_query: query });
+    if (signal) {
+      // Cancel the in-flight request when a newer search supersedes this one.
+      request = request.abortSignal(signal);
+    }
+
+    const { data, error } = await request;
 
     if (error) {
       console.error('Error searching articulos:', error);

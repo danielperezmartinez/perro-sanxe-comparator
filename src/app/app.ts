@@ -1,13 +1,75 @@
-import { Component, signal, resource, inject, ChangeDetectionStrategy, PLATFORM_ID, effect } from '@angular/core';
+import {
+  Component,
+  signal,
+  resource,
+  inject,
+  ChangeDetectionStrategy,
+  PLATFORM_ID,
+  effect,
+} from '@angular/core';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { debounceTime } from 'rxjs';
 import { DatePipe, isPlatformBrowser } from '@angular/common';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { SupabaseService, ArticuloResult } from './core/services/supabase';
 import { ProvinceSelect } from './shared/components/province-select/province-select';
 import { SearchInput } from './shared/components/search-input/search-input';
 import { ResultRow } from './shared/components/result-row/result-row';
+import { version } from '../../package.json';
 
 const PROVINCIAS = [
-  'NACIONAL', 'A Coruña', 'Álava', 'Albacete', 'Alicante', 'Almería', 'Asturias', 'Ávila', 'Badajoz', 'Baleares', 'Barcelona', 'Burgos', 'Cáceres', 'Cádiz', 'Cantabria', 'Castellón', 'Ceuta', 'Ciudad Real', 'Córdoba', 'Cuenca', 'Girona', 'Granada', 'Guadalajara', 'Guipúzcoa', 'Huelva', 'Huesca', 'Jaén', 'La Rioja', 'Las Palmas', 'León', 'Lleida', 'Lugo', 'Madrid', 'Málaga', 'Murcia', 'Navarra', 'Ourense', 'Palencia', 'Pontevedra', 'Salamanca', 'Santa Cruz de Tenerife', 'Segovia', 'Sevilla', 'Soria', 'Tarragona', 'Teruel', 'Toledo', 'Valencia', 'Valladolid', 'Vizcaya', 'Zamora', 'Zaragoza'
+  'NACIONAL',
+  'A Coruña',
+  'Álava',
+  'Albacete',
+  'Alicante',
+  'Almería',
+  'Asturias',
+  'Ávila',
+  'Badajoz',
+  'Baleares',
+  'Barcelona',
+  'Burgos',
+  'Cáceres',
+  'Cádiz',
+  'Cantabria',
+  'Castellón',
+  'Ceuta',
+  'Ciudad Real',
+  'Córdoba',
+  'Cuenca',
+  'Girona',
+  'Granada',
+  'Guadalajara',
+  'Guipúzcoa',
+  'Huelva',
+  'Huesca',
+  'Jaén',
+  'La Rioja',
+  'Las Palmas',
+  'León',
+  'Lleida',
+  'Lugo',
+  'Madrid',
+  'Málaga',
+  'Murcia',
+  'Navarra',
+  'Ourense',
+  'Palencia',
+  'Pontevedra',
+  'Salamanca',
+  'Santa Cruz de Tenerife',
+  'Segovia',
+  'Sevilla',
+  'Soria',
+  'Tarragona',
+  'Teruel',
+  'Toledo',
+  'Valencia',
+  'Valladolid',
+  'Vizcaya',
+  'Zamora',
+  'Zaragoza',
 ];
 
 @Component({
@@ -26,6 +88,14 @@ export class App {
   searchQuery = signal<string>('');
   selectedProvincia = signal<string>('NACIONAL');
   provincias = PROVINCIAS;
+  readonly appVersion = version;
+
+  // Debounced view of searchQuery: the search only fires 300 ms after the user
+  // stops typing, so we don't hit Supabase on every keystroke. The raw
+  // searchQuery still drives the input value for instant feedback.
+  private debouncedQuery = toSignal(toObservable(this.searchQuery).pipe(debounceTime(300)), {
+    initialValue: '',
+  });
 
   // Fecha impresa en la cabecera del tique; se fija una vez por render, no se
   // evalúa en la plantilla (ver docs/README.md, regla sobre `new Date()`).
@@ -52,16 +122,16 @@ export class App {
 
   // Define resource for fetching data
   searchResults = resource<ArticuloResult[], { query: string; provincia: string }>({
-    params: () => ({ query: this.searchQuery(), provincia: this.selectedProvincia() }),
-    loader: async ({ params }) => {
-      const { query, provincia } = params;
-      if (!query || query.length < 2) return [];
+    params: () => ({ query: this.debouncedQuery(), provincia: this.selectedProvincia() }),
+    loader: async ({ params, abortSignal }) => {
+      const query = params.query.trim();
+      if (query.length < 2) return [];
 
-      const results = await this.supabaseService.searchArticulos(query);
+      const results = await this.supabaseService.searchArticulos(query, abortSignal);
       return results
-        .filter(r => r.provincia === provincia || r.provincia === 'NACIONAL')
+        .filter((r) => r.provincia === params.provincia || r.provincia === 'NACIONAL')
         .sort((a, b) => a.precio_por_unidad - b.precio_por_unidad);
-    }
+    },
   });
 
   private async initGeolocation() {
@@ -69,15 +139,20 @@ export class App {
       navigator.geolocation.getCurrentPosition(
         async (position) => {
           try {
-            const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${position.coords.latitude}&lon=${position.coords.longitude}&format=json`, {
-               headers: { 'User-Agent': 'perro-sanxe-comparator' }
-            });
+            const res = await fetch(
+              `https://nominatim.openstreetmap.org/reverse?lat=${position.coords.latitude}&lon=${position.coords.longitude}&format=json`,
+              {
+                headers: { 'User-Agent': 'perro-sanxe-comparator' },
+              },
+            );
             const data = await res.json();
             let province = data.address?.province || data.address?.county || data.address?.state;
 
             if (province) {
               // Map Nominatim output to our PROVINCIAS array
-              const match = PROVINCIAS.find(p => province.toLowerCase().includes(p.toLowerCase()));
+              const match = PROVINCIAS.find((p) =>
+                province.toLowerCase().includes(p.toLowerCase()),
+              );
               if (match) {
                 this.selectedProvincia.set(match);
               }
@@ -88,7 +163,7 @@ export class App {
         },
         (error) => {
           console.warn('Geolocation denied or failed', error);
-        }
+        },
       );
     }
   }

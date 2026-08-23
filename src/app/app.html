@@ -1,13 +1,18 @@
 <div class="flex flex-col lg:flex-row">
-
   <!-- Columna de marca: solo en escritorio, ver docs/Decisiones visuales/Estrategia responsive del tique -->
-  <aside class="hidden lg:flex lg:flex-1 lg:basis-[55%] flex-col justify-center px-16 py-16 relative overflow-hidden">
+  <aside
+    class="hidden lg:flex lg:flex-1 lg:basis-[55%] flex-col justify-center px-16 py-16 relative overflow-hidden"
+  >
     <div class="flex items-center gap-2.5 mb-12">
       <svg aria-hidden="true" viewBox="0 0 24 24" class="h-7 w-7 fill-tique-paper">
-        <path d="M12 3.2c-1.9 0-3 1.5-3 3.2 0 1.1.55 1.9.55 2.9 0 .85-1.3.95-2.2 2-1 1.1-.95 2.8.4 3.4.9.4 1.6-.3 2.4-.3.75 0 1.05.55 1.85.55.8 0 1.1-.55 1.85-.55.8 0 1.5.7 2.4.3 1.35-.6 1.4-2.3.4-3.4-.9-1.05-2.2-1.15-2.2-2 0-1 .55-1.8.55-2.9 0-1.7-1.1-3.2-3-3.2z" />
+        <path
+          d="M12 3.2c-1.9 0-3 1.5-3 3.2 0 1.1.55 1.9.55 2.9 0 .85-1.3.95-2.2 2-1 1.1-.95 2.8.4 3.4.9.4 1.6-.3 2.4-.3.75 0 1.05.55 1.85.55.8 0 1.1-.55 1.85-.55.8 0 1.5.7 2.4.3 1.35-.6 1.4-2.3.4-3.4-.9-1.05-2.2-1.15-2.2-2 0-1 .55-1.8.55-2.9 0-1.7-1.1-3.2-3-3.2z"
+        />
       </svg>
       <span class="font-display text-2xl text-tique-paper tracking-wide">PERRO SANXE</span>
-      <span class="font-mono text-xs font-bold text-tique-muted-onbrand uppercase tracking-wide">Comparator</span>
+      <span class="font-mono text-xs font-bold text-tique-muted-onbrand uppercase tracking-wide"
+        >Comparator</span
+      >
     </div>
 
     <p class="font-display text-5xl leading-[1.15] text-tique-paper">
@@ -15,8 +20,8 @@
     </p>
 
     <p class="font-mono text-base text-tique-muted-onbrand max-w-[440px] mt-7 leading-relaxed">
-      Encuentra el súper más barato de tu zona, en tiempo real. Sin apps raras, sin registrarte: como mirar el
-      tique antes de pagar.
+      Encuentra el súper más barato de tu zona, en tiempo real. Sin apps raras, sin registrarte:
+      como mirar el tique antes de pagar.
     </p>
 
     <div class="flex gap-1.5 mt-16 opacity-50" aria-hidden="true">
@@ -36,24 +41,38 @@
   </aside>
 
   <!-- Panel del tique -->
-  <div class="flex-1 lg:basis-[45%] flex items-center justify-center bg-tique-counter lg:bg-tique-counter-dark px-3.5 py-7 lg:p-10">
+  <div
+    class="relative flex-1 lg:basis-[45%] flex items-center justify-center bg-tique-counter lg:bg-tique-counter-dark px-3.5 py-7 lg:p-10"
+  >
     <div
       class="tique-paper w-full max-w-[380px] shadow-[0_16px_28px_rgba(0,0,0,0.28)] lg:shadow-[0_20px_40px_rgba(0,0,0,0.35)] -rotate-[0.4deg] lg:rotate-[0.6deg] relative [--tique-perforation-bg:#3d1f3a] lg:[--tique-perforation-bg:#2c1729]"
     >
       <div class="tique-perforation"></div>
 
-      <header class="px-5 pt-5 pb-3 border-b-2 border-dashed border-tique-border flex flex-col gap-1.5">
+      <header
+        class="px-5 pt-5 pb-3 border-b-2 border-dashed border-tique-border flex flex-col gap-1.5"
+      >
         <div class="flex items-center gap-2">
-          <svg aria-hidden="true" viewBox="0 0 24 24" class="h-[22px] w-[22px] fill-tique-ink flex-shrink-0">
-            <path d="M12 3.2c-1.9 0-3 1.5-3 3.2 0 1.1.55 1.9.55 2.9 0 .85-1.3.95-2.2 2-1 1.1-.95 2.8.4 3.4.9.4 1.6-.3 2.4-.3.75 0 1.05.55 1.85.55.8 0 1.1-.55 1.85-.55.8 0 1.5.7 2.4.3 1.35-.6 1.4-2.3.4-3.4-.9-1.05-2.2-1.15-2.2-2 0-1 .55-1.8.55-2.9 0-1.7-1.1-3.2-3-3.2z" />
+          <svg
+            aria-hidden="true"
+            viewBox="0 0 24 24"
+            class="h-[22px] w-[22px] fill-tique-ink flex-shrink-0"
+          >
+            <path
+              d="M12 3.2c-1.9 0-3 1.5-3 3.2 0 1.1.55 1.9.55 2.9 0 .85-1.3.95-2.2 2-1 1.1-.95 2.8.4 3.4.9.4 1.6-.3 2.4-.3.75 0 1.05.55 1.85.55.8 0 1.1-.55 1.85-.55.8 0 1.5.7 2.4.3 1.35-.6 1.4-2.3.4-3.4-.9-1.05-2.2-1.15-2.2-2 0-1 .55-1.8.55-2.9 0-1.7-1.1-3.2-3-3.2z"
+            />
           </svg>
           <h1 class="font-display text-2xl text-tique-ink flex items-baseline">
             <span class="uppercase">Perro Sanxe</span
-            ><span class="font-mono text-[10px] font-bold tracking-wide text-tique-muted uppercase"> Comparator</span>
+            ><span class="font-mono text-[10px] font-bold tracking-wide text-tique-muted uppercase">
+              Comparator</span
+            >
           </h1>
         </div>
         <div class="flex justify-between items-center">
-          <span class="text-[9px] tracking-[2px] text-tique-muted">TIQUE DE COMPARACIÓN DE PRECIOS</span>
+          <span class="text-[9px] tracking-[2px] text-tique-muted"
+            >TIQUE DE COMPARACIÓN DE PRECIOS</span
+          >
           <span class="text-[10px] text-tique-muted">{{ today | date: 'dd-MM-yy' }}</span>
         </div>
         <app-province-select
@@ -73,7 +92,9 @@
         <app-search-input [value]="searchQuery()" (valueChange)="onSearchChange($event)" />
       </div>
 
-      <div class="px-5 pt-3.5 pb-2 flex justify-between text-[10px] text-tique-muted border-b border-dashed border-tique-border">
+      <div
+        class="px-5 pt-3.5 pb-2 flex justify-between text-[10px] text-tique-muted border-b border-dashed border-tique-border"
+      >
         <span>{{ searchResults.value()?.length ?? 0 }} ENCONTRADOS</span>
         <span>ORDEN: €/UD</span>
       </div>
@@ -82,19 +103,27 @@
         <!-- Loading State -->
         @if (searchResults.isLoading()) {
           <div class="flex justify-center py-10">
-            <div class="animate-spin rounded-full h-7 w-7 border-t-2 border-b-2 border-tique-accent"></div>
+            <div
+              class="animate-spin rounded-full h-7 w-7 border-t-2 border-b-2 border-tique-accent"
+            ></div>
           </div>
         }
 
         <!-- Empty State -->
-        @if (!searchResults.isLoading() && searchResults.value()?.length === 0 && searchQuery().length >= 2) {
+        @if (
+          !searchResults.isLoading() &&
+          searchResults.value()?.length === 0 &&
+          searchQuery().length >= 2
+        ) {
           <div class="text-center py-8 text-xs text-tique-muted">
             No se han encontrado artículos para "{{ searchQuery() }}" en {{ selectedProvincia() }}.
           </div>
         }
 
         <!-- Results List -->
-        @if (!searchResults.isLoading() && searchResults.value() && searchResults.value()!.length > 0) {
+        @if (
+          !searchResults.isLoading() && searchResults.value() && searchResults.value()!.length > 0
+        ) {
           <cdk-virtual-scroll-viewport itemSize="100" class="h-[320px] w-full custom-scrollbar">
             <app-result-row
               *cdkVirtualFor="let item of searchResults.value(); let last = last; let first = first"
@@ -109,5 +138,11 @@
       <div class="h-5"></div>
       <div class="tique-perforation"></div>
     </div>
+
+    <small
+      class="pointer-events-none absolute bottom-2 right-2 lg:bottom-3 lg:right-3 font-mono text-[9px] tracking-[0.12em] text-tique-muted-onbrand select-none"
+      aria-label="Versión {{ appVersion }}"
+      >v{{ appVersion }}</small
+    >
   </div>
 </div>
