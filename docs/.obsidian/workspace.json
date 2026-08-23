@@ -11,14 +11,13 @@
             "id": "4f9afb5c5ab73d8e",
             "type": "leaf",
             "state": {
-              "type": "markdown",
+              "type": "bases",
               "state": {
-                "file": "README.md",
-                "mode": "preview",
-                "source": false
+                "file": "Tareas/Tareas.base",
+                "viewName": "Todo"
               },
-              "icon": "lucide-file",
-              "title": "README"
+              "icon": "lucide-table",
+              "title": "Tareas"
             }
           }
         ]
@@ -170,6 +169,10 @@
   },
   "active": "4f9afb5c5ab73d8e",
   "lastOpenFiles": [
+    "Tareas/Crear icono de la app.md",
+    "Inicio.md",
+    "README.md",
+    "Tareas/Convertir la aplicación en PWA instalable.md",
     "Tareas/Ampliar el scraping con más supermercados de API pública (estudio Dia, Lidl, Alcampo, etc).md.tmp.20728.4ede7a76a5d1",
     "Tareas/Ampliar el scraping con más supermercados de API pública (estudio Dia, Lidl, Alcampo, etc).md.tmp.20728.b4a0ea7adec1",
     "Tareas/Ampliar el scraping con más supermercados de API pública (estudio Dia, Lidl, Alcampo, etc).md.tmp.20728.7813c6dbe29e",
@@ -182,12 +185,9 @@
     "Tareas/Agrupar resultados por categoría normalizada para comparar entre supermercados.md",
     "Tareas/Agrupar resultados por categoría normalizada para comparar entre supermercados.md.tmp.24452.4f0da43ecac0",
     "Tareas/Mejorar la relevancia del buscador y evitar peticiones por letra.md.tmp.24452.08a341e7213d",
-    "Catálogo técnico/SupabaseService.md.tmp.24452.453df02647fd",
     "Tareas/Mejorar la relevancia del buscador y evitar peticiones por letra.md",
     "Tareas/Mostrar la versión desplegada en el frontend.md",
     "Tareas/Implementar la ingesta de Carrefour (API con protección anti-bot).md",
-    "Inicio.md",
-    "README.md",
     "Tareas/Implementar la ingesta real de precios (Mercadona, Consum, Carrefour).md",
     "Catálogo técnico/Ingesta de precios (scraping).md",
     "Tareas/Cerrar RLS abierto en Supabase y arreglar el buscador roto.md",
