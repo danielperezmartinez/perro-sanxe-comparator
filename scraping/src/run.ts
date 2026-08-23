@@ -24,6 +24,11 @@ const INGESTERS: Record<string, SuperIngester> = {
   carrefour,
 };
 
+// Supers que corren cuando no se especifica --super (los implementados).
+// Carrefour queda fuera a propósito hasta implementarlo, para que el run diario
+// no se marque en rojo por su stub; sigue siendo invocable con --super=carrefour.
+const DEFAULT_SUPERS = ['mercadona', 'consum'];
+
 interface Args {
   supers: string[];
   localidad: string | undefined;
@@ -53,7 +58,7 @@ function parseArgs(argv: string[]): Args {
   const maxItems = Math.max(0, Number.parseInt(maxRaw, 10) || 0);
 
   return {
-    supers: supers.length > 0 ? supers : Object.keys(INGESTERS),
+    supers: supers.length > 0 ? supers : DEFAULT_SUPERS,
     localidad,
     dryRun,
     maxItems,

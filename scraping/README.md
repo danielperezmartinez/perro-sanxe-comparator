@@ -32,7 +32,7 @@ O vía pnpm: `pnpm scrape -- --dry-run --max=50`.
 
 | Flag | Env | Efecto |
 |---|---|---|
-| `--super=a,b` | `SCRAPE_SUPERS` | Supers a ejecutar (por defecto: todos). |
+| `--super=a,b` | `SCRAPE_SUPERS` | Supers a ejecutar (por defecto: los implementados, `mercadona,consum`). Carrefour solo si se pide explícitamente. |
 | `--localidad=X` | `SCRAPE_LOCALIDAD` | Provincia (por defecto `NACIONAL`). |
 | `--dry-run` | `SCRAPE_DRY_RUN=1` | No escribe en Supabase; solo cuenta. |
 | `--max=N` | `SCRAPE_MAX_ITEMS` | Tope de artículos por super (0 = sin tope). |
