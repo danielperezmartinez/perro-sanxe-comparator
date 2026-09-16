@@ -7,7 +7,7 @@ import { ArticuloResult } from '../../../core/services/supabase';
   imports: [CurrencyPipe, DatePipe],
   template: `
     @if (isBest()) {
-      <div class="absolute -top-[18px] -right-1.5 w-[92px] rotate-[-6deg] pointer-events-none">
+      <div class="absolute top-2 -right-1.5 w-[92px] rotate-[-6deg] pointer-events-none">
         <svg viewBox="0 0 100 42" width="92" height="39">
           <path
             d="M8,21 C7,9 29,4 50,5 C74,6 95,11 92,22 C90,34 67,38 47,37 C24,36 9,33 8,21 Z"
@@ -16,7 +16,9 @@ import { ArticuloResult } from '../../../core/services/supabase';
             stroke-width="2.5"
           />
         </svg>
-        <span class="absolute inset-0 flex items-center justify-center text-[9px] font-bold text-tique-accent tracking-wide font-mono">
+        <span
+          class="absolute inset-0 flex items-center justify-center text-[9px] font-bold text-tique-accent tracking-wide font-mono"
+        >
           MÁS BARATO
         </span>
       </div>

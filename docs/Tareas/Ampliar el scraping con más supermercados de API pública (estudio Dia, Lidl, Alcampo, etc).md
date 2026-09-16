@@ -11,7 +11,7 @@ Decisiones:
   - Descartados por anti-bot activo: El Corte Inglés / Supermercado / Hipercor / Supercor (Akamai, "Access Denied" 403), Alimerka y Coviran (Cloudflare challenge). Eroski usa render HTML server-side (Apache Tapestry), sin API JSON pública -> scraping HTML, no encaja con el patrón actual de ingesters JSON.
 Bloqueada: []
 Fecha de creación: 2026-08-23T18:00:00+02:00
-Última modificación: 2026-08-23T18:00:00+02:00
+Última modificación: 2026-08-23T18:30:00+02:00
 ---
 
 # Ampliar el scraping con más supermercados de API pública (estudio Dia, Lidl, Alcampo, etc)
@@ -103,6 +103,26 @@ campos que exige el contrato (sobre todo **precio** y **precio por unidad**).
 - [ ] Pendiente: primera ejecución real en producción (workflow_dispatch o el
       CRON) para confirmar volumen y regla de oro contra la BD.
 
+## Tareas por supermercado (Planificando)
+
+Cada super pendiente investigado tiene su propia tarea con hallazgos y un
+posible workaround, para abordarlos otro día:
+
+- [[Implementar la ingesta de Lidl (API abierta pero dato de baja calidad)]]
+- [[Implementar la ingesta de Alcampo (Ocado Smart Platform, GraphQL con sesión)]]
+- [[Implementar la ingesta de BonPreu i Esclat (Ocado Smart Platform)]]
+- [[Implementar la ingesta de El Corte Inglés e Hipercor (anti-bot Akamai)]]
+- [[Implementar la ingesta de Alimerka (anti-bot Cloudflare)]]
+- [[Implementar la ingesta de Coviran (anti-bot Cloudflare)]]
+- [[Implementar la ingesta de Eroski (web HTML SSR, sin API JSON)]]
+- [[Implementar la ingesta de Aldi (sin venta de alimentación online en España)]]
+- [[Implementar la ingesta de masymas (webs legacy sin API JSON)]]
+- [[Implementar la ingesta de bonÀrea (tienda HTML SSR sin API JSON)]]
+- [[Implementar la ingesta de Family Cash (WordPress sin API de catálogo)]]
+- [[Implementar la ingesta de Gadis (Next.js, endpoint de datos por localizar)]]
+- (ya existía) [[Implementar la ingesta de Carrefour (API con protección anti-bot)]]
+
 ## Pendiente (otros)
 
-- [ ] (Futuro) Estrategia anti-bot para el grupo Carrefour/Alcampo/ECI.
+- [ ] (Futuro) Estrategia anti-bot común para el grupo Carrefour/Alcampo/ECI/
+      Alimerka/Coviran (navegador real / huella de app).

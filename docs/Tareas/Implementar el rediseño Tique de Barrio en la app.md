@@ -9,7 +9,7 @@ Decisiones:
   - Breakpoint de escritorio fijado en `lg` (Tailwind, 1024px); por debajo se usa el layout de una columna también en tablet, sin estado intermedio propio.
 Bloqueada: []
 Fecha de creación: 2026-08-22T21:00:00+02:00
-Última modificación: 2026-08-28T12:51:59+02:00
+Última modificación: 2026-09-16T12:50:00+02:00
 ---
 
 # Implementar el rediseño Tique de Barrio en la app
@@ -103,5 +103,47 @@ Verificación del ajuste:
 ### Despliegue de la corrección
 
 Solicitado el 2026-08-28. Versión `0.4.1` (patch: solo corrección de altura).
-Publicación mediante push a `main` y despliegue automático de Vercel;
-pendiente confirmar el estado final en producción.
+Publicado mediante push a `main`, commit `3b9cc9d`. Vercel confirmó `READY`
+en producción para el despliegue `dpl_AqPtVe4kRdYdgKmUyvs6Xrotwasu`.
+Comprobado HTTP 200 en https://perro-sanxe-comparator.vercel.app, con
+`v0.4.1` y `min-h-dvh` presentes en el HTML servido. La consulta de errores
+de ejecución de este despliegue no devolvió registros; no se ha configurado
+ni evaluado monitorización continua en esta revisión.
+
+## Corrección del recorte del sello «MÁS BARATO» (2026-09-16)
+
+El usuario reportó (con captura de v0.4.1) que el sello dibujado a mano
+"MÁS BARATO" del primer artículo se veía cortado por arriba. Causa: en
+`ResultRow` (`src/app/shared/components/result-row/result-row.ts`) el sello
+es un hijo `absolute -top-[18px]` de la fila; para filas 2+ ese hueco lo cubre
+visualmente la fila anterior, pero para la primera fila ese espacio cae fuera
+del `cdk-virtual-scroll-viewport` (`src/app/app.html`), que recorta su propio
+contenido por overflow — así que el óvalo se cortaba justo en su parte
+superior.
+
+**Primer intento (descartado):** añadir `pt-[20px]` al viewport y subir su
+altura de `h-[320px]` a `h-[340px]`, asumiendo que el padding del contenedor
+con scroll dejaría hueco visible por encima de la primera fila. Medido con
+Playwright (`getBoundingClientRect()` de la fila y del viewport): el
+`padding-top` no desplaza el wrapper interno de `cdk-virtual-scroll-viewport`
+— CDK lo posiciona con `position: absolute; top: 0`, y ese `top: 0` referencia
+el borde de la *padding box* del contenedor, que coincide con el borde exterior
+(el mismo punto donde recorta el `overflow`). El padding del contenedor de
+scroll no crea hueco utilizable para un hijo `absolute` posicionado así; el
+sello seguía cortándose exactamente igual. Revertido.
+
+**Corrección real:** en vez de reservar espacio fuera de la fila (imposible
+de garantizar de forma fiable dentro de un contenedor con scroll recortado),
+se evita que el sello sobresalga por encima del borde de su propia fila, que
+nunca se recorta. En `result-row.ts` se cambió el contenedor del sello de
+`-top-[18px]` a `top-2` (8px hacia abajo en vez de 18px hacia arriba). La
+rotación (`rotate-[-6deg]`) por sí sola ya desplaza el óvalo unos ~4,7px por
+encima del `top` sin rotar (extensión de la caja al rotar un rectángulo de
+92×39 px); `top-2` deja margen de sobra para que ni con la rotación se salga
+del borde superior de la fila.
+
+Verificación en navegador real (Playwright + Chromium, `pnpm start` en
+`http://localhost:4200`, búsqueda "Ajos"): medida la caja del sello contra la
+del viewport (antes: sello 23px por encima del borde de recorte; después: 3px
+por dentro) y confirmado visualmente que el óvalo y el texto se renderizan
+completos en el primer resultado.
