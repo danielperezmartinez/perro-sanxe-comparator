@@ -20,8 +20,8 @@
     </p>
 
     <p class="font-mono text-base text-tique-muted-onbrand max-w-[440px] mt-7 leading-relaxed">
-      Encuentra el súper más barato de tu zona, en tiempo real. Sin apps raras, sin registrarte:
-      como mirar el tique antes de pagar.
+      Encuentra el súper más barato de tu zona, con precios actualizados a diario. Sin apps
+      raras, sin registrarte: como mirar el tique antes de pagar.
     </p>
 
     <div class="flex gap-1.5 mt-16 opacity-50" aria-hidden="true">
@@ -80,6 +80,22 @@
           [selected]="selectedProvincia()"
           (provinciaChange)="selectedProvincia.set($event)"
         />
+        <div class="flex items-center justify-between gap-2">
+          <button
+            type="button"
+            (click)="locateProvince()"
+            class="text-xs font-bold font-mono text-tique-accent underline underline-offset-2 min-h-[24px]"
+            aria-describedby="location-note"
+          >
+            Usar mi ubicación
+          </button>
+          <span id="location-note" class="text-[10px] text-tique-muted text-right">
+            Aproximada; no sale de tu navegador.
+          </span>
+        </div>
+        <p class="text-[10px] text-tique-muted min-h-[1em]" aria-live="polite">
+          {{ locationStatus() }}
+        </p>
       </header>
 
       <div class="px-5 pt-4 pb-1 text-center">
@@ -95,17 +111,21 @@
       <div
         class="px-5 pt-3.5 pb-2 flex justify-between text-[10px] text-tique-muted border-b border-dashed border-tique-border"
       >
-        <span>{{ searchResults.value()?.length ?? 0 }} ENCONTRADOS</span>
-        <span>ORDEN: €/UD</span>
+        <span aria-live="polite">{{ searchResults.value()?.length ?? 0 }} ENCONTRADOS</span>
+        <span title="Precio de referencia: por kg, por litro o por unidad según el producto"
+          >ORDEN: € / REF.</span
+        >
       </div>
 
       <div class="px-5">
         <!-- Loading State -->
         @if (searchResults.isLoading()) {
-          <div class="flex justify-center py-10">
+          <div class="flex justify-center py-10" role="status">
             <div
               class="animate-spin rounded-full h-7 w-7 border-t-2 border-b-2 border-tique-accent"
+              aria-hidden="true"
             ></div>
+            <span class="sr-only">Cargando resultados</span>
           </div>
         }
 
@@ -124,7 +144,13 @@
         @if (
           !searchResults.isLoading() && searchResults.value() && searchResults.value()!.length > 0
         ) {
-          <cdk-virtual-scroll-viewport itemSize="100" class="h-[320px] w-full custom-scrollbar">
+          <cdk-virtual-scroll-viewport
+            itemSize="100"
+            class="h-[320px] w-full custom-scrollbar"
+            tabindex="0"
+            role="region"
+            aria-label="Resultados de la búsqueda"
+          >
             <app-result-row
               *cdkVirtualFor="let item of searchResults.value(); let last = last; let first = first"
               [item]="item"

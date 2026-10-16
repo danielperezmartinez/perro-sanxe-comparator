@@ -15,6 +15,7 @@ import { SupabaseService, ArticuloResult } from './core/services/supabase';
 import { ProvinceSelect } from './shared/components/province-select/province-select';
 import { SearchInput } from './shared/components/search-input/search-input';
 import { ResultRow } from './shared/components/result-row/result-row';
+import { nearestProvince } from './core/geo/nearest-province';
 import { version } from '../../package.json';
 
 const PROVINCIAS = [
@@ -106,8 +107,6 @@ export class App {
       const stored = localStorage.getItem('provincia');
       if (stored && PROVINCIAS.includes(stored)) {
         this.selectedProvincia.set(stored);
-      } else {
-        this.initGeolocation();
       }
     }
 
@@ -134,38 +133,31 @@ export class App {
     },
   });
 
-  private async initGeolocation() {
-    if ('geolocation' in navigator) {
-      navigator.geolocation.getCurrentPosition(
-        async (position) => {
-          try {
-            const res = await fetch(
-              `https://nominatim.openstreetmap.org/reverse?lat=${position.coords.latitude}&lon=${position.coords.longitude}&format=json`,
-              {
-                headers: { 'User-Agent': 'perro-sanxe-comparator' },
-              },
-            );
-            const data = await res.json();
-            let province = data.address?.province || data.address?.county || data.address?.state;
+  // Feedback for the "use my location" button, announced via aria-live.
+  locationStatus = signal<string>('');
 
-            if (province) {
-              // Map Nominatim output to our PROVINCIAS array
-              const match = PROVINCIAS.find((p) =>
-                province.toLowerCase().includes(p.toLowerCase()),
-              );
-              if (match) {
-                this.selectedProvincia.set(match);
-              }
-            }
-          } catch (e) {
-            console.error('Error in reverse geocoding', e);
-          }
-        },
-        (error) => {
-          console.warn('Geolocation denied or failed', error);
-        },
-      );
+  // Only runs when the user presses the button (never on load). The province
+  // is resolved locally from a coarse position, so coordinates are not sent
+  // to any third party.
+  locateProvince() {
+    if (!isPlatformBrowser(this.platformId) || !('geolocation' in navigator)) {
+      this.locationStatus.set('Tu navegador no permite obtener la ubicación.');
+      return;
     }
+    this.locationStatus.set('Buscando tu provincia…');
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const provincia = nearestProvince(position.coords.latitude, position.coords.longitude);
+        if (provincia) {
+          this.selectedProvincia.set(provincia);
+          this.locationStatus.set(`Provincia aproximada: ${provincia}.`);
+        } else {
+          this.locationStatus.set('No pareces estar en España; elige la provincia a mano.');
+        }
+      },
+      () => this.locationStatus.set('No se pudo obtener la ubicación; elige la provincia a mano.'),
+      { enableHighAccuracy: false, maximumAge: 600_000, timeout: 10_000 },
+    );
   }
 
   onSearchChange(value: string) {
