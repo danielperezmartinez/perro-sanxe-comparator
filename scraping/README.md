@@ -19,11 +19,11 @@ supermercados desde sus **APIs JSON internas** y los escribe en Supabase.
 node scraping/src/run.ts --dry-run --max=50
 
 # Un solo super:
-node scraping/src/run.ts --super=mercadona --dry-run --max=50
+node scraping/src/run.ts --super=dia --dry-run --max=50
 
 # Ejecución real (requiere las env de abajo):
-node scraping/src/run.ts                 # todos los supers, NACIONAL
-node scraping/src/run.ts --super=consum --localidad=Valencia
+node scraping/src/run.ts                 # supers activos, NACIONAL
+node scraping/src/run.ts --super=dia --localidad=Valencia
 ```
 
 O vía pnpm: `pnpm scrape -- --dry-run --max=50`.
@@ -32,7 +32,7 @@ O vía pnpm: `pnpm scrape -- --dry-run --max=50`.
 
 | Flag | Env | Efecto |
 |---|---|---|
-| `--super=a,b` | `SCRAPE_SUPERS` | Supers a ejecutar (por defecto: los implementados, `mercadona,consum,dia`). Carrefour solo si se pide explícitamente. |
+| `--super=a,b` | `SCRAPE_SUPERS` | Supers a ejecutar (por defecto: `dia`). Los pausados (`mercadona`, `consum`, `carrefour`) se omiten aunque se pidan. |
 | `--localidad=X` | `SCRAPE_LOCALIDAD` | Provincia (por defecto `NACIONAL`). |
 | `--dry-run` | `SCRAPE_DRY_RUN=1` | No escribe en Supabase; solo cuenta. |
 | `--max=N` | `SCRAPE_MAX_ITEMS` | Tope de artículos por super (0 = sin tope). |
@@ -61,10 +61,18 @@ O vía pnpm: `pnpm scrape -- --dry-run --max=50`.
 
 | Super | Estado | Fuente |
 |---|---|---|
-| Mercadona | ✅ | `tienda.mercadona.es/api/categories/` |
-| Consum | ✅ | `tienda.consum.es/api/rest/V1.0/catalog/product` |
+| Mercadona | ⏸ pausado | `tienda.mercadona.es/api/categories/` — su robots.txt prohíbe `/api` |
+| Consum | ⏸ pausado | `tienda.consum.es/api/rest/V1.0/catalog/product` — su robots.txt prohíbe `/api/` |
 | Dia | ✅ | `dia.es/api/v1/plp-back/l1/all/{L1}/reduced?category_id={L1}&page=` |
-| Carrefour | ⛔ pendiente | endpoints dan 403 (anti-bot); requiere recon propio |
+| Carrefour | ⛔ descartado | endpoints dan 403 (anti-bot); no se evaden protecciones |
+
+## Reglas de scraping
+
+Las fija el apartado "Scraping" de `docs/README.md`. En el código
+(`src/http.ts`): user-agent `PerroSanxeComparator/<versión>` con la URL del
+repo como contacto, 1 s mínimo entre peticiones al mismo host, caché en memoria
+durante la ejecución, reintentos con tope (y `Retry-After`), y un 401/403 no se
+reintenta. Los supers pausados están en `PAUSED` de `src/run.ts`.
 
 ## Regla de oro
 

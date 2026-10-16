@@ -1,7 +1,7 @@
 // Orquestador del scraping.
 //
 // Uso:
-//   node scraping/src/run.ts [--super=mercadona,consum] [--localidad=Valencia] [--dry-run]
+//   node scraping/src/run.ts [--super=dia] [--localidad=Valencia] [--dry-run]
 //
 // Env (obligatorias salvo en --dry-run):
 //   SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY
@@ -26,10 +26,17 @@ const INGESTERS: Record<string, SuperIngester> = {
   carrefour,
 };
 
-// Supers que corren cuando no se especifica --super (los implementados).
-// Carrefour queda fuera a propósito hasta implementarlo, para que el run diario
-// no se marque en rojo por su stub; sigue siendo invocable con --super=carrefour.
-const DEFAULT_SUPERS = ['mercadona', 'consum', 'dia'];
+// Supers pausados: su código se conserva, pero no se ejecutan ni pidiéndolos
+// por --super. Ver el apartado "Scraping" de docs/README.md y la tarea
+// "Adecuar el scraper actual a robots.txt y a las reglas de scraping".
+const PAUSED: Record<string, string> = {
+  mercadona: 'robots.txt prohíbe /api; pausado hasta tener permiso o una fuente autorizada',
+  consum: 'robots.txt prohíbe /api/; pausado hasta tener permiso o una fuente autorizada',
+  carrefour: 'protección anti-bot; no se evade (tarea archivada)',
+};
+
+// Supers que corren cuando no se especifica --super.
+const DEFAULT_SUPERS = ['dia'];
 
 interface Args {
   supers: string[];
@@ -132,6 +139,10 @@ async function main(): Promise<void> {
 
   let hadError = false;
   for (const name of args.supers) {
+    if (PAUSED[name]) {
+      console.warn(`[${name}] omitido: ${PAUSED[name]}.`);
+      continue;
+    }
     const ingester = INGESTERS[name];
     if (!ingester) {
       console.error(`Super desconocido: "${name}" (opciones: ${Object.keys(INGESTERS).join(', ')})`);

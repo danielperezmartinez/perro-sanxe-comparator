@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
     inputs:
       super:
-        description: 'Supers coma-separados (vacío = todos). Ej: mercadona,consum'
+        description: 'Supers coma-separados (vacío = los activos). Ej: dia'
         required: false
         default: ''
       localidad:
