@@ -1,0 +1,57 @@
+name: Seguridad
+
+# Comprobaciones del sistema "Seguridad, coste y cumplimiento" (docs/README.md).
+# No son obligatorias en la protección de rama hasta que estén en verde: la
+# base actual falla a propósito en los hallazgos registrados como tareas.
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  rls:
+    name: Tests RLS y catálogo (pgTAP)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+      - uses: supabase/setup-cli@v1
+        with:
+          version: 2.119.0
+      - run: supabase db start
+      - run: supabase test db
+
+  a11y:
+    name: Accesibilidad (AXE) y secretos en el bundle
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Habilitar pnpm (Corepack)
+        run: corepack enable
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+
+      # Busca claves reales, no el texto "sb_secret_" que supabase-js incluye para
+      # reconocer el prefijo: una secret key (sb_secret_ + token) o un JWT cuyo
+      # payload lleve "role":"service_role" (sus tres alineaciones en base64).
+      - name: Ninguna clave secreta en el bundle
+        run: >-
+          ! grep -rIoE
+          "sb_secret_[A-Za-z0-9_-]{16,}|InJvbGUiOiJzZXJ2aWNlX3Jv|b2xlIjoic2VydmljZV9yb2xl|cm9sZSI6InNlcnZpY2Vfcm9s"
+          dist/perro-sanxe-comparator
+
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm test:a11y
