@@ -58,6 +58,8 @@ este archivo no puede leerse, el agente debe detenerse e informar al usuario.
 
 ### Tareas
 
+_Versión del sistema: 1._
+
 [[Tareas/Tareas.base|Abrir el panel de tareas]] — gestión de trabajo como notas
 con estado.
 
@@ -70,6 +72,8 @@ con estado.
   para no duplicar.
 
 ### Decisiones visuales y de estilos
+
+_Versión del sistema: 1._
 
 [[Decisiones visuales/Decisiones visuales.base|Abrir el panel de decisiones visuales]]
 — acuerdos sobre lenguaje visual, tokens, espaciados, paleta y componentes.
@@ -86,6 +90,8 @@ con estado.
   en vez de editar ese fichero.
 
 ### Catálogo técnico
+
+_Versión del sistema: 1._
 
 [[Catálogo técnico|Abrir el catálogo técnico]] — superficie reutilizable
 (componentes, servicios, contratos) para evitar reimplementar lo que ya existe.
