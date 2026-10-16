@@ -16,6 +16,11 @@ Este es el nexo de navegación de la memoria del proyecto **PerroSanxeComparator
 
 [[Catálogo técnico|Abrir el catálogo técnico]]
 
+### Seguridad, coste y cumplimiento
+
+[[Seguridad/Seguridad.base|Abrir el panel de seguridad]] ·
+[[Seguridad/Checklist de lanzamiento|Checklist de lanzamiento]]
+
 ## Próximos sistemas
 
 - **ADR (decisiones de arquitectura)** — no montado en esta primera pasada;
