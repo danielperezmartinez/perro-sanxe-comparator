@@ -4,7 +4,7 @@ import { ChangeDetectionStrategy, Component, input, output } from '@angular/core
   selector: 'app-province-select',
   template: `
     <div class="flex items-center gap-2">
-      <span class="text-[10px] font-bold text-tique-ink whitespace-nowrap">TIENDA:</span>
+      <span class="text-[11px] font-bold text-tique-ink whitespace-nowrap">TIENDA:</span>
       <div class="relative flex-grow">
         <select
           [value]="selected()"

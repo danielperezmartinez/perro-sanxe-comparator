@@ -45,11 +45,11 @@ describe('ResultRow', () => {
     fixture.componentRef.setInput('isBest', false);
     fixture.detectChanges();
 
-    expect(fixture.nativeElement.textContent).not.toContain('MENOR €/REF.');
+    expect(fixture.nativeElement.textContent).not.toContain('Menor precio de referencia');
 
     fixture.componentRef.setInput('isBest', true);
     fixture.detectChanges();
 
-    expect(fixture.nativeElement.textContent).toContain('MENOR €/REF.');
+    expect(fixture.nativeElement.textContent).toContain('Menor precio de referencia');
   });
 });

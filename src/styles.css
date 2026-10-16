@@ -49,3 +49,20 @@
     @apply rounded-full border-2 border-solid border-transparent bg-clip-padding;
   }
 }
+
+/* Legal pages (aviso legal, privacidad): readable prose on the ticket paper. */
+@layer components {
+  .legal-body h2 {
+    @apply font-bold text-base uppercase mt-6 mb-2;
+  }
+  .legal-body p,
+  .legal-body ul {
+    @apply mb-3;
+  }
+  .legal-body ul {
+    @apply list-disc pl-5 space-y-1.5;
+  }
+  .legal-body a {
+    @apply text-tique-accent underline underline-offset-2;
+  }
+}

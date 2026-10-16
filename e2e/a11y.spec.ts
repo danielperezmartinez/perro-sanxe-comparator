@@ -1,8 +1,8 @@
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
-// Main routes. The app is a single page today; add new routes here when created.
-const RUTAS = ['/'];
+// Main routes; add new ones here when created.
+const RUTAS = ['/', '/aviso-legal', '/privacidad'];
 
 for (const ruta of RUTAS) {
   test(`WCAG AA sin infracciones: ${ruta}`, async ({ page }) => {

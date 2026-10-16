@@ -64,16 +64,16 @@
           </svg>
           <h1 class="font-display text-2xl text-tique-ink flex items-baseline">
             <span class="uppercase">Perro Sanxe</span
-            ><span class="font-mono text-[10px] font-bold tracking-wide text-tique-muted uppercase">
+            ><span class="font-mono text-[11px] font-bold tracking-wide text-tique-muted uppercase">
               Comparator</span
             >
           </h1>
         </div>
         <div class="flex justify-between items-center">
-          <span class="text-[9px] tracking-[2px] text-tique-muted"
+          <span class="text-[11px] tracking-[2px] text-tique-muted"
             >TIQUE DE COMPARACIÓN DE PRECIOS</span
           >
-          <span class="text-[10px] text-tique-muted">{{ today | date: 'dd-MM-yy' }}</span>
+          <span class="text-[11px] text-tique-muted">{{ today | date: 'dd-MM-yy' }}</span>
         </div>
         <app-province-select
           [provincias]="provincias"
@@ -84,16 +84,16 @@
           <button
             type="button"
             (click)="locateProvince()"
-            class="text-xs font-bold font-mono text-tique-accent underline underline-offset-2 min-h-[24px]"
+            class="text-xs font-bold font-mono text-tique-accent underline underline-offset-2 min-h-[24px] whitespace-nowrap"
             aria-describedby="location-note"
           >
             Usar mi ubicación
           </button>
-          <span id="location-note" class="text-[10px] text-tique-muted text-right">
+          <span id="location-note" class="text-[11px] text-tique-muted text-right">
             Aproximada; no sale de tu navegador.
           </span>
         </div>
-        <p class="text-[10px] text-tique-muted min-h-[1em]" aria-live="polite">
+        <p class="text-[11px] text-tique-muted min-h-[1em]" aria-live="polite">
           {{ locationStatus() }}
         </p>
       </header>
@@ -109,7 +109,7 @@
       </div>
 
       <div
-        class="px-5 pt-3.5 pb-2 flex justify-between text-[10px] text-tique-muted border-b border-dashed border-tique-border"
+        class="px-5 pt-3.5 pb-2 flex justify-between text-[11px] text-tique-muted border-b border-dashed border-tique-border"
       >
         <span aria-live="polite">{{ searchResults.value()?.length ?? 0 }} ENCONTRADOS</span>
         <span title="Precio de referencia: por kg, por litro o por unidad según el producto"
@@ -161,12 +161,18 @@
         }
       </div>
 
-      <div class="h-5"></div>
+      <nav
+        aria-label="Información legal"
+        class="px-5 pt-3 pb-4 mt-2 border-t border-dashed border-tique-border flex justify-center gap-4 text-[11px] font-mono text-tique-muted"
+      >
+        <a routerLink="/aviso-legal" class="underline underline-offset-2">Aviso legal</a>
+        <a routerLink="/privacidad" class="underline underline-offset-2">Privacidad</a>
+      </nav>
       <div class="tique-perforation"></div>
     </div>
 
     <small
-      class="pointer-events-none absolute bottom-2 right-2 lg:bottom-3 lg:right-3 font-mono text-[9px] tracking-[0.12em] text-tique-muted-onbrand select-none"
+      class="pointer-events-none absolute bottom-2 right-2 lg:bottom-3 lg:right-3 font-mono text-[11px] tracking-[0.12em] text-tique-muted-onbrand select-none"
       aria-label="Versión {{ appVersion }}"
       >v{{ appVersion }}</small
     >
