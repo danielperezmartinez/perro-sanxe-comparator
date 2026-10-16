@@ -1,11 +1,13 @@
 ---
 Nombre: Revisar los planes de ingesta que evaden protecciones anti-bot
-Estado: Pendiente
+Estado: Hecha
 Resumen: Prioridad alta (auditoría 2026-10-16). Varias tareas de ingesta en Planificando o Pendiente plantean saltarse protecciones anti-bot (Carrefour, Alimerka, Coviran, El Corte Inglés/Hipercor) y la auditoría señala lo mismo para Dia. La regla de scraping prohíbe evadir protecciones; hay que reescribir o archivar esos planes antes de implementarlos. No es asesoramiento legal.
-Decisiones: []
+Decisiones:
+  - "(Usuario, 2026-10-17) Se archivan las tareas de ingesta que exigían evadir anti-bot o usar sesión: Carrefour, Alimerka, Coviran, El Corte Inglés/Hipercor, Alcampo y BonPreu i Esclat. Si aparece una API pública o un acuerdo, se abre una tarea nueva."
+  - Carrefour queda en la lista PAUSED de scraping/src/run.ts y no se ejecuta aunque se pida por --super.
 Bloqueada: []
 Fecha de creación: 2026-10-16T23:55:00+02:00
-Última modificación: 2026-10-16T23:55:00+02:00
+Última modificación: 2026-10-17T01:45:00+02:00
 ---
 
 # Revisar los planes de ingesta que evaden protecciones anti-bot
@@ -40,4 +42,5 @@ No se han editado; cada una debe revisarse cuando se retome:
 
 ## Verificación
 
-<!-- Qué se ejecutó y dónde. -->
+- Las 6 tareas pasan a `Archivada` con la decisión anotada.
+- Dia no evade nada: su API responde sin protección y su robots.txt no la bloquea (2026-10-17).

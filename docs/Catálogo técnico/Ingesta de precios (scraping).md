@@ -7,8 +7,8 @@ Estado: "Vigente"
 Ámbito: "Aplicación"
 Fuente: "scraping/"
 Entrada pública: "scraping/src/run.ts (orquestador) · SuperIngester (scraping/src/supers/types.ts) · SupabaseWriter (scraping/src/sink/supabase-writer.ts)"
-Resumen: "Herramienta Node (TS nativo en Node >=24) que recolecta catálogo y precios desde las APIs JSON internas de los supers y los escribe en Supabase con service_role aplicando la regla de oro. Cada super implementa el contrato SuperIngester (async generator de NormalizedArticulo). Mercadona y Consum implementados; Carrefour pendiente (403 anti-bot). Ejecutado por CRON en GitHub Actions. Independiente del build de Angular."
-Última modificación: "2026-08-22T21:45:00+02:00"
+Resumen: "Herramienta Node (TS nativo en Node >=24) que recolecta catálogo y precios desde las APIs JSON internas de los supers y los escribe en Supabase con service_role aplicando la regla de oro. Cada super implementa el contrato SuperIngester (async generator de NormalizedArticulo). Activo: Dia. Mercadona y Consum implementados pero pausados (robots.txt prohíbe /api); Carrefour descartado (anti-bot). src/http.ts aplica las reglas de scraping del README: user-agent veraz, 1 s entre peticiones al mismo host, caché por ejecución y reintentos con tope. Ejecutado por CRON en GitHub Actions. Independiente del build de Angular."
+Última modificación: "2026-10-17T01:50:00+02:00"
 ---
 
 # Ingesta de precios (scraping)

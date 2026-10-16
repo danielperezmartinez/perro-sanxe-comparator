@@ -1,11 +1,13 @@
 ---
 Nombre: Corregir la accesibilidad detectada por la auditoría y AXE
-Estado: Pendiente
+Estado: Hecha
 Resumen: Prioridad baja (auditoría 2026-10-16). El AXE nuevo (pnpm test:a11y) falla en la vista de resultados porque el cdk-virtual-scroll-viewport no es accesible con teclado (scrollable-region-focusable, serious). La auditoría manual añade textos de 9-10 px, resultados sin región aria-live y un spinner sin nombre accesible. Hay que dejar AXE en verde y repasar a mano teclado y lector de pantalla.
-Decisiones: []
+Decisiones:
+  - (Usuario, 2026-10-17) Texto mínimo de 11 px en toda la app; registrado como decisión visual Nº6.
+  - La revisión manual con teclado y lector de pantalla queda en la checklist de lanzamiento; AXE no la sustituye.
 Bloqueada: []
 Fecha de creación: 2026-10-16T23:55:00+02:00
-Última modificación: 2026-10-16T23:55:00+02:00
+Última modificación: 2026-10-17T01:45:00+02:00
 ---
 
 # Corregir la accesibilidad detectada por la auditoría y AXE
@@ -38,4 +40,6 @@ AA) y dejar en verde el job `a11y` de `.github/workflows/seguridad.yml`.
 
 ## Verificación
 
-<!-- pnpm test:a11y en verde y job a11y en verde. -->
+- `pnpm build && pnpm test:a11y`: AXE WCAG 2.2 AA sin infracciones en `/`, `/aviso-legal`, `/privacidad` y en la vista con resultados (antes fallaba `scrollable-region-focusable`).
+- Viewport con `tabindex=0` y nombre, contador con `aria-live`, spinner con `role=status`.
+- `pnpm test --watch=false`: 21/21.

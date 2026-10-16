@@ -1,13 +1,14 @@
 ---
 Nombre: Implementar la ingesta de Carrefour (API con protección anti-bot)
-Estado: Pendiente
+Estado: Archivada
 Resumen: Añadir Carrefour al sistema de ingesta ya en marcha (ver [[Implementar la ingesta real de precios (Mercadona, Consum, Carrefour)]]). Sus endpoints JSON candidatos responden HTTP 403 con una petición simple (protección anti-bot), así que requiere un recon propio antes de implementar el ingester. El andamiaje ya existe; basta implementar el contrato SuperIngester en scraping/src/supers/carrefour.ts y volver a añadir 'carrefour' a DEFAULT_SUPERS en run.ts.
 Decisiones:
   - Se separó de la tarea de ingesta principal (Mercadona/Consum, ya Hecha) para no bloquear su cierre.
   - Mantener el mismo patrón que Mercadona/Consum, con APIs JSON internas, contrato SuperIngester (async generator de NormalizedArticulo) y escritura por el writer común con la regla de oro. No introducir scraping de HTML salvo que no haya más remedio.
+  - "(Usuario, 2026-10-17) Archivada: exige evadir una protección anti-bot o usar una sesión ajena, y la regla de scraping de [[README#Seguridad, coste y cumplimiento]] lo prohíbe. Ver [[Revisar los planes de ingesta que evaden protecciones anti-bot]]. Si aparece una API pública o un acuerdo, se abre una tarea nueva."
 Bloqueada: []
 Fecha de creación: 2026-08-23T13:00:00+02:00
-Última modificación: 2026-08-23T13:00:00+02:00
+Última modificación: 2026-10-17T01:45:00+02:00
 ---
 
 # Implementar la ingesta de Carrefour (API con protección anti-bot)

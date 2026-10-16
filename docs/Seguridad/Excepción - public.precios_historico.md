@@ -6,7 +6,7 @@ Regla: SELECT (true) solo con excepción escrita.
 Objeto: public.precios_historico · select_precios_historico_public
 Resumen: Lectura pública (anon y authenticated) del histórico de precios por artículo y provincia. Son precios publicados por los supermercados, sin datos personales ni por usuario; la escritura queda reservada a la clave secreta del scraper.
 Revisar antes de: 2027-04-16
-Última modificación: 2026-10-16T23:55:00+02:00
+Última modificación: 2026-10-17T01:50:00+02:00
 ---
 
 # Excepción - public.precios_historico
@@ -23,7 +23,8 @@ pública de los supermercados, sin relación con usuarios.
 - `anon` y `authenticated` solo tienen `SELECT`; lo comprueba
   `supabase/tests/10_lectura_publica_catalogo.test.sql`.
 - `statement_timeout` de 3 s para `anon`.
-- Pendiente: el comentario `excepcion: Excepción - public.precios_historico` en
-  la política y el índice `(articulo_id, provincia, fecha_registro desc)` que
-  evita lecturas costosas (ver
+- El comentario `excepcion: Excepción - public.precios_historico` en la política
+  y el índice `(articulo_id, provincia, fecha_registro desc)` que evita lecturas
+  costosas están en la migración `20261017000000_endurecer_seguridad`, probada
+  en local y pendiente de aplicar al remoto (ver
   [[Tareas/Endurecer Supabase (pg_net, search_path, índice y comentarios de excepción)]]).

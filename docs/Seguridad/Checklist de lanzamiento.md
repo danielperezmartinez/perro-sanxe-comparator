@@ -3,8 +3,8 @@ Nombre: Checklist de lanzamiento
 Tipo: Checklist
 Estado: Pendiente
 Resumen: Estado de la configuración fuera del código (gasto, Auth, firewall, secretos, plan, legal y scraping) que ningún test del repo comprueba. Pendiente de la primera revisión en los paneles; los datos ya conocidos vienen de la auditoría de solo lectura del 2026-10-16.
-Última revisión: 2026-10-16
-Última modificación: 2026-10-16T23:55:00+02:00
+Última revisión: 2026-10-17
+Última modificación: 2026-10-17T01:50:00+02:00
 ---
 
 # Checklist de lanzamiento
@@ -60,10 +60,12 @@ lanzamiento público, al cambiar de plan y, como mínimo, una vez por trimestre.
 > No es asesoramiento legal; ante dudas concretas, consulta a un profesional.
 
 - [ ] Aviso legal (LSSI-CE) y política de privacidad (RGPD) publicados y
-      enlazados desde la página. Hoy no existen; ver
-      [[Tareas/Publicar aviso legal (LSSI) y política de privacidad]].
-- [ ] Terceros que reciben datos listados en la política, con región de los
-      datos: Supabase, Vercel, OpenStreetMap Nominatim (coordenadas).
+      enlazados desde la página. Hechos en el código (`/aviso-legal`,
+      `/privacidad`); falta comprobarlos en producción tras desplegar.
+- [x] Terceros que reciben datos listados en la política, con región:
+      Vercel (EE. UU.), Supabase (UE, Irlanda) y Google Fonts (EE. UU.). Ya no
+      se usa Nominatim: la ubicación se resuelve en el navegador.
+- [ ] Revisión de los textos legales por un profesional (opcional, recomendado).
 - [ ] Banner de cookies solo si hay cookies no técnicas. Hoy solo hay
       `localStorage` técnico (provincia elegida), sin analítica.
 
@@ -71,25 +73,29 @@ lanzamiento público, al cambiar de plan y, como mínimo, una vez por trimestre.
 
 > No es asesoramiento legal.
 
-- [ ] `robots.txt` de cada súper ingestado revisado y respetado (Mercadona,
-      Consum y Dia hoy; Mercadona y Consum tienen `Disallow: /api`).
+- [x] `robots.txt` de cada súper ingestado revisado y respetado (2026-10-17):
+      Mercadona y Consum prohíben `/api` y quedan pausados; Dia no bloquea
+      `/api/v1/plp-back` y sigue activo.
 - [ ] Términos de uso de cada súper revisados (scraping, reutilización de
-      datos, derecho sui generis de bases de datos de la UE).
-- [ ] User-agent veraz e identificable, con contacto; sin rotación ni
-      suplantación de navegadores.
-- [ ] Retrasos entre peticiones, caché y reintentos con tope configurados en
-      `scraping/src/http.ts`.
-- [ ] Ninguna ingesta evade protecciones anti-bot (Carrefour, Alimerka,
-      Coviran, El Corte Inglés…).
+      datos, derecho sui generis de bases de datos de la UE); ver
+      [[Tareas/Pedir permiso a Mercadona y Consum o buscar una fuente autorizada]].
+- [x] User-agent veraz e identificable, con contacto
+      (`PerroSanxeComparator/<versión>` + URL del repo); sin rotación.
+- [x] 1 s mínimo entre peticiones al mismo host, caché por ejecución y
+      reintentos con tope en `scraping/src/http.ts`.
+- [x] Ninguna ingesta evade protecciones anti-bot: Carrefour pausado y las
+      tareas de Alimerka, Coviran, El Corte Inglés, Alcampo y BonPreu archivadas.
 - [ ] Frecuencia del cron (`scrape.yml`, diario) proporcionada al uso.
 
 ## Accesibilidad
 
 - [ ] Revisión manual con teclado y lector de pantalla del flujo principal
-      (buscar, cambiar provincia, recorrer resultados).
+      (buscar, cambiar provincia, "Usar mi ubicación", recorrer resultados y
+      páginas legales).
 
 ## Revisiones
 
 | Fecha | Quién | Notas |
 | --- | --- | --- |
 | 2026-10-16 | Agente (auditoría de solo lectura) | Checklist creada. Plan gratuito, proyecto no compartido, 0 usuarios de Auth, sin Edge Functions activas ni jobs de `pg_cron`. Los puntos de panel siguen sin revisar. |
+| 2026-10-17 | Agente (rama `chore/sistema-seguridad`) | Scraping y terceros de privacidad marcados tras los arreglos. Los puntos de Supabase, Vercel y GitHub siguen sin revisar en los paneles; la migración de endurecimiento está pendiente de aplicar en remoto. |

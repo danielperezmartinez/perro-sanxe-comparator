@@ -1,10 +1,12 @@
 ---
 Nombre: Implementar la ingesta de Alimerka (anti-bot Cloudflare)
-Estado: Planificando
+Estado: Archivada
 Resumen: Alimerka (alimerka.es) está protegido por Cloudflare: la petición simple devuelve el interstitial "Just a moment..." (challenge JS de Cloudflare) en vez del contenido. No se llegó a ver ninguna API. Objetivo: valorar un workaround vía navegador real que resuelva el challenge, o la API de su app, antes de intentar la ingesta.
+Decisiones:
+  - "(Usuario, 2026-10-17) Archivada: exige evadir una protección anti-bot o usar una sesión ajena, y la regla de scraping de [[README#Seguridad, coste y cumplimiento]] lo prohíbe. Ver [[Revisar los planes de ingesta que evaden protecciones anti-bot]]. Si aparece una API pública o un acuerdo, se abre una tarea nueva."
 Bloqueada: []
 Fecha de creación: 2026-08-23T18:30:00+02:00
-Última modificación: 2026-08-23T18:30:00+02:00
+Última modificación: 2026-10-17T01:45:00+02:00
 ---
 
 # Implementar la ingesta de Alimerka (anti-bot Cloudflare)

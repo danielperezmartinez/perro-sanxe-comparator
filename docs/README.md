@@ -292,7 +292,7 @@ lo que se haga con MCP, CLI o panel.
   `src/app/shared/components/` como componente presentacional (recibe datos
   por `input()`, notifica por `output()`, sin `inject()` de servicios de
   datos). El estado y las llamadas a servicios viven en los componentes que
-  orquestan (hoy `App`; en el futuro, componentes de feature). Ver
+  orquestan (los componentes de feature, hoy `Comparador`). Ver
   "Arquitectura objetivo" más abajo.
 - Formularios reactivos en vez de template-driven.
 - Lazy loading para rutas de features.
@@ -391,8 +391,8 @@ lo que se haga con MCP, CLI o panel.
 
 ## Propósito del proyecto
 
-Aplicación web (Angular 22 + Supabase) para comparar en tiempo real precios de
-supermercados en España.
+Aplicación web (Angular 22 + Supabase) para comparar precios de supermercados
+en España, con datos que se actualizan una vez al día.
 
 - **Frontend:** Angular 22, zoneless, full reactive (Signals, Standalone
   Components). RxJS queda solo para interoperabilidad puntual, no para
@@ -406,8 +406,13 @@ supermercados en España.
 ```
 src/app/
 ├── core/
+│   ├── geo/
+│   │   └── nearest-province.ts  # Provincia aproximada calculada en el navegador
 │   └── services/
 │       └── supabase.ts       # Cliente Supabase centralizado
+├── features/                 # Componentes de ruta (lazy) que orquestan estado
+│   ├── comparador/           # Ruta "" : buscador y resultados
+│   └── legal/                # /aviso-legal y /privacidad (+ LegalLayout)
 ├── shared/
 │   └── components/            # UI reutilizable y presentacional
 │       ├── province-select/   # input()/output(), sin inject() de servicios
@@ -415,15 +420,16 @@ src/app/
 │       └── result-row/
 ├── app.config.ts             # Providers de la app (incluye SSR hydration)
 ├── app.config.server.ts      # Providers específicos del servidor
-├── app.routes.ts             # Rutas principales
+├── app.ts                    # Raíz: solo <router-outlet />
+├── app.routes.ts             # Rutas principales (lazy)
 └── app.routes.server.ts      # Rutas SSR
 ```
 
 Los componentes de `shared/components/` son presentacionales: reciben datos
 por `input()` y notifican por `output()`, sin inyectar servicios de datos ni
 conocer Supabase. El estado (signals, `resource()`) y las llamadas a
-servicios viven en los componentes que orquestan (hoy `App`; en el futuro,
-los componentes de feature que se añadan).
+servicios viven en los componentes de feature que orquestan (hoy
+`features/comparador/Comparador`).
 
 `src/environments/environment.ts` contiene la URL del proyecto y la clave
 **anon/publishable** de Supabase — **sí se commitea**: esa clave está
@@ -453,7 +459,7 @@ completo.
 | `id` | uuid | |
 | `articulo_id` | uuid | foreign key |
 | `precio` | decimal | |
-| `precio_por_unidad` | decimal | kg/gr |
+| `precio_por_unidad` | decimal | precio de referencia (kg, L o ud; la unidad aún no se guarda) |
 | `provincia` | text | o `'NACIONAL'` |
 | `fecha_registro` | timestamp | default `now()` |
 
@@ -465,6 +471,10 @@ datos** por el trigger `BEFORE INSERT` `trg_check_price_change` (función
 `precio` ni `precio_por_unidad` cambian respecto al último registro. El scraper
 además la comprueba antes de insertar (RPC `ultimos_precios`) como optimización
 para no enviar escrituras inútiles; ambos criterios son consistentes.
+
+**Esquema versionado:** todo el DDL vive en `supabase/migrations/` (baseline
+del remoto del 2026-10-16 y migraciones posteriores); `scraping/sql/` es
+histórico. Ver [[#Seguridad, coste y cumplimiento]].
 
 **Seguridad (RLS):** RLS está activo en `articulos` y `precios_historico`.
 Los roles `anon`/`authenticated` (el cliente, con la clave anon/publishable)
@@ -479,26 +489,36 @@ política de lectura explícita en vez de dejarla sin RLS.
   vive en `scraping/` (Node ≥24, TS nativo) y el workflow en
   `.github/workflows/scrape.yml`. Ver `scraping/README.md` y
   [[Tareas/Implementar la ingesta real de precios (Mercadona, Consum, Carrefour)]].
-- Fuente de datos: APIs JSON internas de cada super. Implementados Mercadona,
-  Consum y Dia; Carrefour pendiente (su API responde 403). Otros supermercados
+- Fuente de datos: APIs JSON internas de cada super, solo si su `robots.txt` y
+  sus términos lo permiten (apartado "Scraping" de
+  [[#Seguridad, coste y cumplimiento]]). Activo: Dia. Pausados: Mercadona y
+  Consum (su `robots.txt` prohíbe `/api`; ver
+  [[Tareas/Pedir permiso a Mercadona y Consum o buscar una fuente autorizada]]).
+  Descartados por anti-bot: Carrefour y los archivados. Otros supermercados
   estudiados en [[Tareas/Ampliar el scraping con más supermercados de API pública (estudio Dia, Lidl, Alcampo, etc)]].
   Escritura con la secret key nueva (`sb_secret_...`) o el `service_role`
   legacy — la que salta RLS.
 - Parámetro `localidad` (opcional): si se recibe, scrapear solo esa provincia;
   si no, `'NACIONAL'` (MVP).
-- Manejo de errores: reintentos y rotación básica de user-agents.
+- Peticiones: user-agent fijo y veraz (`PerroSanxeComparator/<versión>` con la
+  URL del repo), 1 s mínimo entre peticiones al mismo host, caché por ejecución
+  y reintentos con tope; un 401/403 no se reintenta (`scraping/src/http.ts`).
 - **Sistema demo retirado:** existía una Edge Function `scraper` (simulador que
   insertaba 4 productos falsos con precios `Math.random()`) invocada cada hora
   por un `pg_cron` (`invoke-scraper-every-hour`). Ese `pg_cron` se ha
   desprogramado (`cron.unschedule`) porque generaba datos falsos que chocaban
-  con la ingesta real. La Edge Function sigue desplegada pero inerte; conviene
-  borrarla desde el dashboard.
+  con la ingesta real. La Edge Function ya no está desplegada (comprobado el
+  2026-10-16) y `pg_net`, que solo usaba ese sistema, se elimina en la
+  migración `20261017000000_endurecer_seguridad`.
 
 ### Funcionalidades del frontend
 
-- **Geolocalización:** intentar `navigator.geolocation`; si falla o se
-  deniega, ofrecer un `select` con las provincias de España; persistir la
-  selección en `localStorage`.
+- **Provincia:** `select` con las provincias de España, persistido en
+  `localStorage`. La geolocalización solo se pide al pulsar "Usar mi
+  ubicación" y la provincia se calcula en el navegador (capital más cercana);
+  las coordenadas no se envían a terceros.
+- **Páginas legales:** `/aviso-legal` y `/privacidad`, enlazadas desde el pie
+  del tique.
 - **Buscador laxo:** peticiones a una función RPC en Supabase que usa
   `websearch_to_tsquery` para tolerar errores tipográficos leves o términos
   incompletos.

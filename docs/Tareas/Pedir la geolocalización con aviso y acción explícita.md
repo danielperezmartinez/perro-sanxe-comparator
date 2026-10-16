@@ -1,11 +1,13 @@
 ---
 Nombre: Pedir la geolocalización con aviso y acción explícita
-Estado: Pendiente
+Estado: Hecha
 Resumen: Prioridad alta (auditoría 2026-10-16). La app pide la geolocalización al cargar y envía las coordenadas exactas a OpenStreetMap Nominatim sin aviso previo. Debe pedirse solo tras pulsar un botón que explique que la ubicación se envía a Nominatim para deducir la provincia, y Nominatim debe figurar en la política de privacidad. No es asesoramiento legal.
-Decisiones: []
+Decisiones:
+  - "La ubicación solo se pide al pulsar \"Usar mi ubicación\" y la provincia se calcula en el navegador (capital más cercana, src/app/core/geo/nearest-province.ts). Ya no se usa Nominatim: las coordenadas no salen del dispositivo."
+  - "Posición de baja precisión (enableHighAccuracy: false) y aviso visible junto al botón: \"Aproximada; no sale de tu navegador.\""
 Bloqueada: []
 Fecha de creación: 2026-10-16T23:55:00+02:00
-Última modificación: 2026-10-16T23:55:00+02:00
+Última modificación: 2026-10-17T01:45:00+02:00
 ---
 
 # Pedir la geolocalización con aviso y acción explícita
@@ -38,4 +40,6 @@ con las coordenadas exactas.
 
 ## Verificación
 
-<!-- Tests de App y AXE en verde (compuerta de "Hecha"). -->
+- `pnpm test --watch=false`: 21/21, incluidos los tests de que no se pide la ubicación al cargar, de que el botón resuelve la provincia sin `fetch` y de `nearestProvince`.
+- `pnpm build && pnpm test:a11y`: AXE 3 rutas + resultados y CSP sin infracciones (5/5).
+- Comprobado en navegador real (SSR local).

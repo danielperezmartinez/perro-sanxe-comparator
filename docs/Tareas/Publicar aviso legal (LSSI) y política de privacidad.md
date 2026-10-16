@@ -1,11 +1,14 @@
 ---
 Nombre: Publicar aviso legal (LSSI) y política de privacidad
-Estado: Pendiente
+Estado: Hecha
 Resumen: Prioridad alta (auditoría 2026-10-16). La web pública no tiene aviso legal (LSSI-CE, art. 10) ni política de privacidad (RGPD, art. 13). Hay que crear ambas páginas, enlazarlas desde todas las vistas y listar los terceros que reciben datos (Supabase, Vercel, Nominatim), con su región. No es asesoramiento legal.
-Decisiones: []
+Decisiones:
+  - (Usuario, 2026-10-17) Titular Daniel Pérez Martínez, contacto dlperezmartinez@gmail.com; proyecto sin ingresos ni publicidad, por lo que no se publican NIF ni domicilio.
+  - (Usuario) Se mantiene Google Fonts; se declara Google como tercero en la política de privacidad.
+  - "Terceros declarados: Vercel (EE. UU.), Supabase (UE, Irlanda, eu-west-1) y Google Fonts (EE. UU.). Los textos no son asesoramiento legal; conviene revisarlos con un profesional."
 Bloqueada: []
 Fecha de creación: 2026-10-16T23:55:00+02:00
-Última modificación: 2026-10-16T23:55:00+02:00
+Última modificación: 2026-10-17T01:45:00+02:00
 ---
 
 # Publicar aviso legal (LSSI) y política de privacidad
@@ -31,4 +34,7 @@ Cumplir la primera regla de "Legal y privacidad" de
 
 ## Verificación
 
-<!-- AXE en verde también en las rutas nuevas. -->
+- Rutas `/aviso-legal` y `/privacidad` lazy y prerenderizadas, enlazadas desde el pie del tique y entre sí.
+- `pnpm test --watch=false`: 21/21 (renderizado de las tres rutas).
+- `pnpm test:a11y`: AXE sin infracciones en las tres rutas.
+- Commit `634167a`.

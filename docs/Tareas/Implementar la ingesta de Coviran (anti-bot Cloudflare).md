@@ -1,10 +1,12 @@
 ---
 Nombre: Implementar la ingesta de Coviran (anti-bot Cloudflare)
-Estado: Planificando
+Estado: Archivada
 Resumen: La tienda de Coviran (tiendas.coviran.es) está protegida por Cloudflare: la petición simple no completa (challenge "Just a moment..."). No se vio API. Objetivo: valorar workaround vía navegador real o API de app, igual que Alimerka.
+Decisiones:
+  - "(Usuario, 2026-10-17) Archivada: exige evadir una protección anti-bot o usar una sesión ajena, y la regla de scraping de [[README#Seguridad, coste y cumplimiento]] lo prohíbe. Ver [[Revisar los planes de ingesta que evaden protecciones anti-bot]]. Si aparece una API pública o un acuerdo, se abre una tarea nueva."
 Bloqueada: []
 Fecha de creación: 2026-08-23T18:30:00+02:00
-Última modificación: 2026-08-23T18:30:00+02:00
+Última modificación: 2026-10-17T01:45:00+02:00
 ---
 
 # Implementar la ingesta de Coviran (anti-bot Cloudflare)
