@@ -1,8 +1,9 @@
 ---
 Número: 2
-Estado: Aceptada
+Estado: Reemplazada
 Ámbito: Componente
 Resumen: Anatomía del componente "tique" (recibo de supermercado) que sustituye a las tarjetas .linear-card como contenedor principal de la pantalla de búsqueda y resultados.
+Reemplazada por: "[[Anatomía del tique con textos veraces y texto mínimo de 11 px]]"
 Decisión: |
   El contenido de la app (cabecera, buscador y resultados) vive dentro de un
   único componente visual con forma de tique de supermercado, apoyado sobre un
@@ -57,7 +58,7 @@ Consecuencias: |
     puramente decorativo y puede implementarse como un pseudo-elemento o un
     div fijo arriba/abajo del contenedor del tique.
 Fecha de creación: 2026-08-22T20:00:00+02:00
-Última modificación: 2026-08-22T20:00:00+02:00
+Última modificación: 2026-10-17T01:30:00+02:00
 ---
 
 # Anatomía del componente tique

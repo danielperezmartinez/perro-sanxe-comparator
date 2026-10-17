@@ -1,10 +1,12 @@
 ---
 Nombre: Implementar la ingesta de BonPreu i Esclat (Ocado Smart Platform)
-Estado: Planificando
+Estado: Archivada
 Resumen: La tienda online de BonPreu/Esclat (compraonline.bonpreuesclat.cat) corre sobre Ocado Smart Platform, igual que Alcampo: los endpoints REST adivinados devuelven "Not Found" en texto plano y la API real es GraphQL con sesión. Sin challenge anti-bot. Objetivo: reutilizar el workaround de recon GraphQL de Alcampo (misma plataforma) para capturar la query de catálogo y la sesión.
+Decisiones:
+  - "(Usuario, 2026-10-17) Archivada: exige evadir una protección anti-bot o usar una sesión ajena, y la regla de scraping de [[README#Seguridad, coste y cumplimiento]] lo prohíbe. Ver [[Revisar los planes de ingesta que evaden protecciones anti-bot]]. Si aparece una API pública o un acuerdo, se abre una tarea nueva."
 Bloqueada: []
 Fecha de creación: 2026-08-23T18:30:00+02:00
-Última modificación: 2026-08-23T18:30:00+02:00
+Última modificación: 2026-10-17T01:45:00+02:00
 ---
 
 # Implementar la ingesta de BonPreu i Esclat (Ocado Smart Platform)

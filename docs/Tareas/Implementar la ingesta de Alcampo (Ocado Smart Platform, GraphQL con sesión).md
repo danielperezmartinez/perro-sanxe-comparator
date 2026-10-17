@@ -1,10 +1,12 @@
 ---
 Nombre: Implementar la ingesta de Alcampo (Ocado Smart Platform, GraphQL con sesión)
-Estado: Planificando
+Estado: Archivada
 Resumen: La tienda online de Alcampo (compraonline.alcampo.es) corre sobre Ocado Smart Platform (OSP): el HTML contiene referencias a "osp" y "graphql", y los endpoints REST adivinados (/api/v5, /api/v6...) devuelven "Not Found" en texto plano. No hay anti-bot de challenge (no es Cloudflare/Akamai), pero la API es GraphQL y probablemente exige tokens/cookies de sesión (aunque sea anónima) y cabeceras específicas. Objetivo: recon del tráfico real (Claude-in-Chrome) para capturar la query GraphQL de catálogo y los headers/sesión, igual que se resolvió Dia por observación de tráfico.
+Decisiones:
+  - "(Usuario, 2026-10-17) Archivada: exige evadir una protección anti-bot o usar una sesión ajena, y la regla de scraping de [[README#Seguridad, coste y cumplimiento]] lo prohíbe. Ver [[Revisar los planes de ingesta que evaden protecciones anti-bot]]. Si aparece una API pública o un acuerdo, se abre una tarea nueva."
 Bloqueada: []
 Fecha de creación: 2026-08-23T18:30:00+02:00
-Última modificación: 2026-08-23T18:30:00+02:00
+Última modificación: 2026-10-17T01:45:00+02:00
 ---
 
 # Implementar la ingesta de Alcampo (Ocado Smart Platform, GraphQL con sesión)

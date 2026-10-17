@@ -1,10 +1,12 @@
 ---
 Nombre: Implementar la ingesta de El Corte Inglés e Hipercor (anti-bot Akamai)
-Estado: Planificando
+Estado: Archivada
 Resumen: El supermercado online de El Corte Inglés (y sus enseñas Hipercor/Supercor, misma plataforma) está protegido por Akamai: tanto la web (/supermercado/) como los endpoints de API devuelven HTTP 403 "Access Denied" con petición simple. Es un anti-bot de detección (huella TLS/JS/cookies sensor_data), no un problema de contrato de API. Objetivo: valorar un workaround vía navegador real (Claude-in-Chrome) que supere el challenge antes de intentar la ingesta.
+Decisiones:
+  - "(Usuario, 2026-10-17) Archivada: exige evadir una protección anti-bot o usar una sesión ajena, y la regla de scraping de [[README#Seguridad, coste y cumplimiento]] lo prohíbe. Ver [[Revisar los planes de ingesta que evaden protecciones anti-bot]]. Si aparece una API pública o un acuerdo, se abre una tarea nueva."
 Bloqueada: []
 Fecha de creación: 2026-08-23T18:30:00+02:00
-Última modificación: 2026-08-23T18:30:00+02:00
+Última modificación: 2026-10-17T01:45:00+02:00
 ---
 
 # Implementar la ingesta de El Corte Inglés e Hipercor (anti-bot Akamai)

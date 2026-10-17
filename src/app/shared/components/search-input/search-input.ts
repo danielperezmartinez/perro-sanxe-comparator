@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component, input, output } from '@angular/core
 @Component({
   selector: 'app-search-input',
   template: `
-    <label for="tique-search" class="block text-[10px] font-bold text-tique-ink mb-1.5">
+    <label for="tique-search" class="block text-[11px] font-bold text-tique-ink mb-1.5">
       ¿QUÉ ANDAS BUSCANDO?
     </label>
     <div class="flex items-center gap-2 min-h-[48px] bg-[#fffdf6] border-2 border-dashed border-tique-ink px-3">
