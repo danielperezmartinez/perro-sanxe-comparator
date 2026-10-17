@@ -579,7 +579,7 @@ política de lectura explícita en vez de dejarla sin RLS.
   desprogramado (`cron.unschedule`) porque generaba datos falsos que chocaban
   con la ingesta real. La Edge Function ya no está desplegada (comprobado el
   2026-10-16) y `pg_net`, que solo usaba ese sistema, se elimina en la
-  migración `20261017000000_endurecer_seguridad`.
+  migración `20261017123548_endurecer_seguridad`.
 
 ### Funcionalidades del frontend
 

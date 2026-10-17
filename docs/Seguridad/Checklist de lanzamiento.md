@@ -4,7 +4,7 @@ Tipo: Checklist
 Estado: Pendiente
 Resumen: Estado de la configuración fuera del código (gasto, Auth, firewall, secretos, plan, GitHub, legal y scraping) que ningún test del repo comprueba. Pendiente de la primera revisión en los paneles; los datos ya conocidos vienen de la auditoría de solo lectura del 2026-10-16.
 Última revisión: 2026-10-17
-Última modificación: 2026-10-17T14:30:00+02:00
+Última modificación: 2026-10-17T14:40:00+02:00
 ---
 
 # Checklist de lanzamiento
@@ -33,7 +33,8 @@ lanzamiento público, al cambiar de plan y, como mínimo, una vez por trimestre.
 - [x] Edge Function `scraper` (demo retirada) borrada: la auditoría del
       2026-10-16 no encontró Edge Functions desplegadas.
 - [ ] Historial de migraciones del remoto alineado con `supabase/migrations/`
-      (`supabase migration repair`) antes de usar `supabase db push`.
+      (`supabase migration repair`) antes de usar `supabase db push`. La migración de endurecimiento ya coincide (20261017123548); falta la baseline, ver
+      [[Tareas/Alinear el historial de migraciones y mover extensiones fuera de public]].
 
 ## Vercel (`perro-sanxe-comparator`)
 
@@ -112,3 +113,4 @@ lanzamiento público, al cambiar de plan y, como mínimo, una vez por trimestre.
 | 2026-10-16 | Agente (auditoría de solo lectura) | Checklist creada. Plan gratuito, proyecto no compartido, 0 usuarios de Auth, sin Edge Functions activas ni jobs de `pg_cron`. Los puntos de panel siguen sin revisar. |
 | 2026-10-17 | Agente (rama `chore/sistema-seguridad`) | Scraping y terceros de privacidad marcados tras los arreglos. Los puntos de Supabase, Vercel y GitHub siguen sin revisar en los paneles; la migración de endurecimiento está pendiente de aplicar en remoto. |
 | 2026-10-17 | Agente (sincronización a v2) | Sección GitHub ampliada. Revisión inicial con gitleaks 8.30.1 (genéricos y personales): historial, mensajes y ramas sin fugas, salvo las dos claves públicas de Supabase, documentadas en [[Excepción - claves públicas de Supabase en el historial]]. |
+| 2026-10-17 | Agente (con aprobación del usuario) | Migración de endurecimiento aplicada en remoto y verificada (catálogo limpio, buscador correcto, advisor de rendimiento sin avisos). |
