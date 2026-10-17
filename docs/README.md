@@ -267,6 +267,8 @@ lo que se haga con MCP, CLI o panel.
     del PR (patrones de `.gitleaks.toml`). En local, los hooks de `.githooks/`
     (activados con `pnpm install`, script `prepare`) lo revisan antes de cada
     commit y push, también con los patrones personales.
+  - Los tres jobs son obligatorios para fusionar en `main` (flujo en
+    [[#3. Versionado, publicación y despliegue]]).
 - **Una tarea que toque backend o UI no pasa a `Hecha`** hasta que esas
   comprobaciones estén en verde, y su sección "Verificación" lo deja escrito (qué
   se ejecutó y dónde). Si el cambio añade tablas, políticas, funciones o rutas,
@@ -417,32 +419,64 @@ lo que se haga con MCP, CLI o panel.
   valorar `resource()`.
 - `angular-ssr`: usar Server Side Rendering.
 
-### 3. Versionado y despliegue
+### 3. Versionado, publicación y despliegue
 
-- **SemVer** en `package.json`.
+Esta regla es la única fuente del flujo de publicación; las demás secciones
+la enlazan.
+
+| Cambio | Cómo se publica | Versión | Despliegue |
+| --- | --- | --- | --- |
+| **Código**: cualquier archivo fuera de `docs/` | Rama propia y pull request contra `main`; se fusiona solo con los checks del workflow `Seguridad` en verde | Se incrementa en la propia PR | Al fusionar en `main`; se verifica en Vercel |
+| **Solo bóveda**: todos los archivos dentro de `docs/` | Push directo a `main` | No se incrementa | No hay: `vercel.json` omite el build cuando el commit no cambia nada fuera de `docs/` |
+
+- **Nunca se hace push directo a `main` de un cambio que toque código**,
+  aunque GitHub lo permita a los administradores. Un commit que mezcle bóveda
+  y código cuenta como código.
+- `main` exige en verde, y con la rama al día con `main`, los tres checks del
+  workflow `Seguridad`: «Tests RLS y catálogo (pgTAP)», «Accesibilidad (AXE)
+  y secretos en el bundle» y «Fugas (gitleaks)». El workflow también se
+  ejecuta en cada push a `main`, pero un push directo se despliega sin
+  esperar a su resultado; por eso el código va siempre por PR. La protección
+  no se aplica a administradores (`enforce_admins: false`) para que los
+  cambios de solo `docs/` puedan ir directos: que el código vaya por PR es
+  esta norma, no un bloqueo técnico.
+- **SemVer** en `package.json`. **Cada PR de código incrementa la versión**
+  en la propia PR, y no se fusiona si su versión no supera la de `main`. Si
+  la PR recibe más commits antes de fusionarse, no hace falta volver a
+  incrementarla. El tipo de incremento sale de los commits de la PR según
+  Conventional Commits: algún `BREAKING CHANGE` o `!` tras el tipo → major;
+  algún `feat` → minor; si solo hay `fix` u otros tipos → patch. Se usa
+  `pnpm version patch|minor|major --no-git-tag-version` (nunca npm).
 - **Despliegue automático vía Vercel**: el repo de GitHub
   (`danielperezmartinez/perro-sanxe-comparator`) está importado en Vercel
-  (proyecto `perro-sanxe-comparator`), que despliega automáticamente en cada
-  `push`. No hay `vercel.json`: Vercel detecta el proyecto Angular en modo
-  zero-config y sí aprovecha el bundle SSR que genera `ng build`
-  (`dist/perro-sanxe-comparator/` con `browser/` + `server/`) — sirve los
+  (proyecto `perro-sanxe-comparator`), que despliega cada commit de `main` en
+  producción y cada rama en una preview. Vercel detecta el proyecto Angular en
+  modo zero-config y aprovecha el bundle SSR que genera `ng build`
+  (`dist/perro-sanxe-comparator/` con `browser/` + `server/`): sirve los
   estáticos de `browser/` desde su CDN y ejecuta `server/server.mjs` como
-  función serverless. El script `serve:ssr:perro-sanxe-comparator`
-  (`node dist/perro-sanxe-comparator/server/server.mjs`) solo se usa para
-  probar el bundle SSR en local; en producción no se ejecuta manualmente.
-- **Protocolo obligatorio cuando el usuario pida hacer deploy/despliegue:**
-  1. Antes de pushear, subir la versión en `package.json` siguiendo SemVer.
-     El tipo de bump se determina a partir de los commits pendientes desde
-     la última versión, según Conventional Commits: algún `feat` → minor;
-     algún `BREAKING CHANGE` o `!` tras el tipo → major; si no hay ninguno
-     de esos y solo hay `fix`/otros tipos → patch.
-  2. Hacer push.
-  3. Comprobar que Vercel ha completado el despliegue correctamente (p. ej.
-     `vercel ls`/`vercel inspect` del proyecto, con la CLI ya autenticada
-     como `devappsdpm`, o el dashboard).
-  4. Si el despliegue falla, informar al usuario de lo ocurrido. **No tomar
-     ninguna acción correctiva ni reintentar nada sin que el usuario lo
-     autorice explícitamente.**
+  función serverless. `vercel.json` solo añade las cabeceras de seguridad y un
+  `ignoreCommand` que omite el build cuando el commit no cambia nada fuera de
+  `docs/`; si la comprobación falla (por ejemplo, sin commit anterior), se
+  construye igualmente. El script `serve:ssr:perro-sanxe-comparator` solo se
+  usa para probar el bundle SSR en local.
+- **Cuando el usuario pida desplegar** (o «hacer deploy») un cambio de código,
+  pide el flujo completo: incremento de versión, commits en una rama propia,
+  push de esa rama, PR con GitHub CLI (`gh`), esperar los checks en verde,
+  fusionar y verificar el despliegue. Si el usuario no ha autorizado fusionar,
+  el agente se detiene con la PR abierta e informa. Si el cambio solo toca
+  `docs/`, «publicar» es commit y push directo a `main`.
+- Fusionar no completa por sí solo el despliegue: hay que localizar en Vercel
+  el deployment de producción del commit de `main` (`vercel ls` /
+  `vercel inspect`, con la CLI autenticada como `devappsdpm`, o el dashboard)
+  y esperar a que llegue a `READY`.
+- Si el despliegue falla, se informa al usuario de lo ocurrido. **No se toma
+  ninguna acción correctiva ni se reintenta nada sin su autorización
+  explícita.** Cada corrección es una PR nueva con su propio incremento de
+  versión.
+- Los cambios en el proyecto Supabase de este repo (migraciones, funciones) se
+  aplican aparte y solo con autorización expresa del usuario, antes de
+  fusionar el frontend que los necesita. La migración del repo lleva la misma
+  versión que registra el historial remoto.
 
 ### 4. Idioma de código y documentación
 
