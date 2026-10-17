@@ -2,9 +2,9 @@
 Nombre: Checklist de lanzamiento
 Tipo: Checklist
 Estado: Pendiente
-Resumen: Estado de la configuración fuera del código (gasto, Auth, firewall, secretos, plan, legal y scraping) que ningún test del repo comprueba. Pendiente de la primera revisión en los paneles; los datos ya conocidos vienen de la auditoría de solo lectura del 2026-10-16.
+Resumen: Estado de la configuración fuera del código (gasto, Auth, firewall, secretos, plan, GitHub, legal y scraping) que ningún test del repo comprueba. Pendiente de la primera revisión en los paneles; los datos ya conocidos vienen de la auditoría de solo lectura del 2026-10-16.
 Última revisión: 2026-10-17
-Última modificación: 2026-10-17T01:50:00+02:00
+Última modificación: 2026-10-17T14:30:00+02:00
 ---
 
 # Checklist de lanzamiento
@@ -52,8 +52,20 @@ lanzamiento público, al cambiar de plan y, como mínimo, una vez por trimestre.
 - [ ] Secretos `SUPABASE_URL` y `SUPABASE_SECRET_KEY` solo como secretos de
       Actions; `SUPABASE_SERVICE_ROLE_KEY` legacy retirado si ya no se usa.
 - [ ] Permisos por defecto de `GITHUB_TOKEN` en solo lectura.
-- [ ] Jobs `rls` y `a11y` de `seguridad.yml` marcados como obligatorios en la
-      protección de `main` **cuando estén en verde**.
+- [ ] Jobs `rls`, `a11y` y `fugas` de `seguridad.yml` marcados como
+      obligatorios en la protección de `main` **cuando estén en verde**.
+- [x] Visibilidad del repo conocida: **público** (comprobado el 2026-10-17), así
+      que aplica "Vulnerabilidades y hallazgos sensibles".
+- [ ] Secret scanning activado.
+- [ ] Push protection activado (bloquea en el servidor los pushes con secretos
+      conocidos).
+- [ ] Private vulnerability reporting activado.
+- [ ] Hooks activos en cada clon de trabajo (`git config core.hooksPath`
+      apunta a `.githooks`, lo hace `pnpm install`) y gitleaks instalado;
+      fichero de patrones personales creado fuera del repo. Hecho en el clon
+      principal del PC de desarrollo (2026-10-17); repetir en cada clon nuevo.
+- [ ] Alertas de Dependabot activadas (las actualizaciones de acciones ya están
+      en `.github/dependabot.yml`).
 
 ## Legal y privacidad
 
@@ -99,3 +111,4 @@ lanzamiento público, al cambiar de plan y, como mínimo, una vez por trimestre.
 | --- | --- | --- |
 | 2026-10-16 | Agente (auditoría de solo lectura) | Checklist creada. Plan gratuito, proyecto no compartido, 0 usuarios de Auth, sin Edge Functions activas ni jobs de `pg_cron`. Los puntos de panel siguen sin revisar. |
 | 2026-10-17 | Agente (rama `chore/sistema-seguridad`) | Scraping y terceros de privacidad marcados tras los arreglos. Los puntos de Supabase, Vercel y GitHub siguen sin revisar en los paneles; la migración de endurecimiento está pendiente de aplicar en remoto. |
+| 2026-10-17 | Agente (sincronización a v2) | Sección GitHub ampliada. Revisión inicial con gitleaks 8.30.1 (genéricos y personales): historial, mensajes y ramas sin fugas, salvo las dos claves públicas de Supabase, documentadas en [[Excepción - claves públicas de Supabase en el historial]]. |
