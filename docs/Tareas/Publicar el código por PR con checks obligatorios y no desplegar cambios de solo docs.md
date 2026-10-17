@@ -30,3 +30,12 @@ mano, no depende de Vercel y no hace commits en el repo.
 
 - `ignoreCommand` probado en local sobre los últimos 15 commits de `main`: los
   de solo `docs/` devuelven 0 y los que tocan código devuelven 1.
+- Protección de `main` aplicada (2026-10-17, con confirmación del usuario):
+  `strict: true`, los tres checks de `Seguridad` (app GitHub Actions) y
+  `enforce_admins: false`. La PR #6 quedó `BLOCKED` mientras los checks
+  estaban pendientes y `BEHIND` cuando `main` avanzó, hasta ponerla al día.
+- PR #6 (v0.5.1) fusionada con `rls`, `a11y`, `fugas` y Vercel en verde;
+  despliegue de producción `dpl_ECT1U4xeoFEqXJkt9p33hFbRtVDV` (commit
+  `0986274`) en `READY`.
+- Este mismo cambio de solo `docs/`, con push directo a `main`, es la prueba
+  del `ignoreCommand` en Vercel.
