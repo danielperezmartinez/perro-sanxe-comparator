@@ -9,6 +9,7 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "test:a11y": "playwright test",
+    "prepare": "git config core.hooksPath .githooks",
     "scrape": "node scraping/src/run.ts",
     "serve:ssr:perro-sanxe-comparator": "node dist/perro-sanxe-comparator/server/server.mjs"
   },

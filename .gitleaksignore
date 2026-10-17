@@ -1,0 +1,7 @@
+# Falsos positivos documentados de gitleaks (ver docs/Seguridad/
+# "Excepción - claves públicas de Supabase en el historial.md"). Solo claves
+# públicas por diseño; una clave secreta nunca se añade aquí: se rota.
+# eea1768: clave anon legacy (JWT con role=anon) del proyecto.
+eea17687c690f20ce98f8fd9b885788405485a2f:src/environments/environment.ts:jwt:5
+# c30fab6: clave publishable (sb_publishable_) del proyecto.
+c30fab6479d62a7576fd3a2057e5718075af63d2:src/environments/environment.ts:generic-api-key:8
