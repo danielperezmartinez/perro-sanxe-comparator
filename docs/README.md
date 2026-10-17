@@ -105,7 +105,7 @@ _Versión del sistema: 1._
 
 ### Seguridad, coste y cumplimiento
 
-_Versión del sistema: 2._
+_Versión del sistema: 3._
 
 Carpeta [[Seguridad/Seguridad.base|Seguridad/]]: excepciones justificadas a estas
 reglas, la [[Seguridad/Checklist de lanzamiento|checklist de lanzamiento]] y
@@ -267,8 +267,6 @@ lo que se haga con MCP, CLI o panel.
     del PR (patrones de `.gitleaks.toml`). En local, los hooks de `.githooks/`
     (activados con `pnpm install`, script `prepare`) lo revisan antes de cada
     commit y push, también con los patrones personales.
-  - Los tres jobs son obligatorios para fusionar en `main` (flujo en
-    [[#3. Versionado, publicación y despliegue]]).
 - **Una tarea que toque backend o UI no pasa a `Hecha`** hasta que esas
   comprobaciones estén en verde, y su sección "Verificación" lo deja escrito (qué
   se ejecutó y dónde). Si el cambio añade tablas, políticas, funciones o rutas,
@@ -281,6 +279,76 @@ lo que se haga con MCP, CLI o panel.
   se quita también el comentario `excepcion:` del objeto. Una excepción vencida
   (`Revisar antes de` en el pasado) se revisa antes de cualquier otro cambio
   sobre ese objeto.
+- Sus jobs son checks obligatorios para integrar en la rama principal; el flujo
+  de publicación está en la sección [[#Publicación]] y no se repite aquí.
+
+### Publicación
+
+_Versión del sistema: 1._
+
+Esta es la única regla de publicación del proyecto; las demás secciones la
+enlazan en vez de repetirla. Recoge la política común de publicación de las
+webs del usuario (decidida el 2026-10-17).
+
+| Cambio | Cómo se publica | Versión | Despliegue |
+| --- | --- | --- | --- |
+| **Código**: cualquier archivo fuera de `docs/` | Rama corta y pull request contra `main`, integrada con squash | Sube en la propia PR | Production en Vercel al integrar en `main`, verificado |
+| **Solo bóveda**: todo dentro de `docs/` | Commit y push directo a `main` | No cambia | Ninguno (`ignoreCommand` de `vercel.json`) |
+
+- Un commit o una PR que mezcle bóveda y código cuenta como **código**.
+- **Nunca se hace push directo de código a `main`**, aunque GitHub lo permita a
+  administradores. `main` exige PR (0 aprobaciones) y los checks del workflow
+  `Seguridad` en verde y actualizados con `main` (`strict`): «Tests RLS y
+  catálogo (pgTAP)», «Accesibilidad (AXE) y secretos en el bundle» y «Fugas
+  (gitleaks)». Un push directo se desplegaría sin esperarlos. La guarda de
+  `.githooks/pre-push` (`_rama_principal.sh`) rechaza en local un push a `main`
+  que toque algo fuera de `docs/`; no se salta (`--no-verify`) sin permiso
+  explícito del usuario.
+- **Cada PR de código sube la versión** de `package.json` (SemVer) y no se
+  integra si no supera la de `main` (lo comprueba el CI con
+  `scripts/comprobar-version.sh`). El agente propone el incremento según los
+  commits de la PR (Conventional Commits: `BREAKING CHANGE` o `!` → major;
+  `feat` → minor; el resto → patch) y **el usuario lo aprueba antes de abrir la
+  PR**; un major, siempre con autorización expresa. Se aplica con
+  `pnpm version patch|minor|major --no-git-tag-version` (nunca npm). Si la PR
+  recibe más commits antes de integrarse, no se vuelve a subir.
+- **Dependabot:** sus PR son código. El agente añade en la propia rama la subida
+  `patch` y la integra con autorización, como cualquier otra.
+- **Publicar código** significa: rama corta (`feat/*`, `fix/*`, `chore/*`,
+  `docs/*`), PR contra `main` con GitHub CLI (`gh`), esperar los checks,
+  integrarla con squash solo si el usuario lo autorizó para esa PR (si no,
+  detenerse con la PR abierta e informar) y verificar el despliegue. Auto-merge
+  está desactivado en el repo.
+- **Publicar la bóveda** significa: commit y push directo a `main`, sin PR,
+  sin subir la versión y sin despliegue.
+- **Verificar el despliegue**: localizar en Vercel el despliegue de producción
+  del commit exacto de `main` (`vercel ls` / `vercel inspect`, con la CLI
+  autenticada como `devappsdpm`, o el dashboard) y comprobar que llega a
+  `READY` y sus logs. Si queda en `ERROR`, avisar al usuario con un reporte y
+  detenerse: no reintentar, redesplegar ni hacer rollback por iniciativa
+  propia. La corrección es una PR nueva con su propia versión.
+- Los commits nuevos usan el correo privado de GitHub
+  (`…@users.noreply.github.com`), nunca uno personal. El historial ya
+  publicado no se reescribe.
+- Las migraciones y funciones del proyecto Supabase propio de este repo se
+  aplican aparte, con autorización expresa del usuario, antes de integrar el
+  código que las necesita. El fichero de migración del repo lleva la misma
+  versión que el historial remoto; si la herramienta asigna otra, se renombra
+  el fichero.
+- Configuración: protección de `main` (PR obligatoria con 0 aprobaciones, los
+  tres checks en `strict`, `required_linear_history`, sin exigir resolver
+  conversaciones, `enforce_admins=false` para que el push directo de `docs/`
+  funcione con la cuenta compartida, sin force push ni borrado); en el repo,
+  solo squash (merge commit y rebase desactivados), `delete_branch_on_merge` y
+  sin auto-merge; job `Cambios` en `seguridad.yml` (los jobs `rls` y `a11y` se
+  omiten si el cambio solo toca `docs/`; `fugas` corre siempre); `ignoreCommand`
+  en `vercel.json`; guarda en `.githooks/pre-push`. Vercel despliega cada commit
+  de `main` en producción y cada rama en una preview (proyecto
+  `perro-sanxe-comparator`, Angular zero-config sobre el bundle SSR de
+  `ng build`).
+- Una tarea de código no pasa a `Hecha` hasta que su PR está integrada y el
+  despliegue verificado; su sección "Verificación" anota la PR, el commit y el
+  estado del despliegue. Si la PR espera autorización, la tarea sigue `En curso`.
 
 ## Reglas fundamentales del proyecto
 
@@ -421,62 +489,8 @@ lo que se haga con MCP, CLI o panel.
 
 ### 3. Versionado, publicación y despliegue
 
-Esta regla es la única fuente del flujo de publicación; las demás secciones
-la enlazan.
-
-| Cambio | Cómo se publica | Versión | Despliegue |
-| --- | --- | --- | --- |
-| **Código**: cualquier archivo fuera de `docs/` | Rama propia y pull request contra `main`; se fusiona solo con los checks del workflow `Seguridad` en verde | Se incrementa en la propia PR | Al fusionar en `main`; se verifica en Vercel |
-| **Solo bóveda**: todos los archivos dentro de `docs/` | Push directo a `main` | No se incrementa | No hay: `vercel.json` omite el build cuando el commit no cambia nada fuera de `docs/` |
-
-- **Nunca se hace push directo a `main` de un cambio que toque código**,
-  aunque GitHub lo permita a los administradores. Un commit que mezcle bóveda
-  y código cuenta como código.
-- `main` exige en verde, y con la rama al día con `main`, los tres checks del
-  workflow `Seguridad`: «Tests RLS y catálogo (pgTAP)», «Accesibilidad (AXE)
-  y secretos en el bundle» y «Fugas (gitleaks)». El workflow también se
-  ejecuta en cada push a `main`, pero un push directo se despliega sin
-  esperar a su resultado; por eso el código va siempre por PR. La protección
-  no se aplica a administradores (`enforce_admins: false`) para que los
-  cambios de solo `docs/` puedan ir directos: que el código vaya por PR es
-  esta norma, no un bloqueo técnico.
-- **SemVer** en `package.json`. **Cada PR de código incrementa la versión**
-  en la propia PR, y no se fusiona si su versión no supera la de `main`. Si
-  la PR recibe más commits antes de fusionarse, no hace falta volver a
-  incrementarla. El tipo de incremento sale de los commits de la PR según
-  Conventional Commits: algún `BREAKING CHANGE` o `!` tras el tipo → major;
-  algún `feat` → minor; si solo hay `fix` u otros tipos → patch. Se usa
-  `pnpm version patch|minor|major --no-git-tag-version` (nunca npm).
-- **Despliegue automático vía Vercel**: el repo de GitHub
-  (`danielperezmartinez/perro-sanxe-comparator`) está importado en Vercel
-  (proyecto `perro-sanxe-comparator`), que despliega cada commit de `main` en
-  producción y cada rama en una preview. Vercel detecta el proyecto Angular en
-  modo zero-config y aprovecha el bundle SSR que genera `ng build`
-  (`dist/perro-sanxe-comparator/` con `browser/` + `server/`): sirve los
-  estáticos de `browser/` desde su CDN y ejecuta `server/server.mjs` como
-  función serverless. `vercel.json` solo añade las cabeceras de seguridad y un
-  `ignoreCommand` que omite el build cuando el commit no cambia nada fuera de
-  `docs/`; si la comprobación falla (por ejemplo, sin commit anterior), se
-  construye igualmente. El script `serve:ssr:perro-sanxe-comparator` solo se
-  usa para probar el bundle SSR en local.
-- **Cuando el usuario pida desplegar** (o «hacer deploy») un cambio de código,
-  pide el flujo completo: incremento de versión, commits en una rama propia,
-  push de esa rama, PR con GitHub CLI (`gh`), esperar los checks en verde,
-  fusionar y verificar el despliegue. Si el usuario no ha autorizado fusionar,
-  el agente se detiene con la PR abierta e informa. Si el cambio solo toca
-  `docs/`, «publicar» es commit y push directo a `main`.
-- Fusionar no completa por sí solo el despliegue: hay que localizar en Vercel
-  el deployment de producción del commit de `main` (`vercel ls` /
-  `vercel inspect`, con la CLI autenticada como `devappsdpm`, o el dashboard)
-  y esperar a que llegue a `READY`.
-- Si el despliegue falla, se informa al usuario de lo ocurrido. **No se toma
-  ninguna acción correctiva ni se reintenta nada sin su autorización
-  explícita.** Cada corrección es una PR nueva con su propio incremento de
-  versión.
-- Los cambios en el proyecto Supabase de este repo (migraciones, funciones) se
-  aplican aparte y solo con autorización expresa del usuario, antes de
-  fusionar el frontend que los necesita. La migración del repo lleva la misma
-  versión que registra el historial remoto.
+La regla de versionado, publicación y despliegue vive en la sección del
+sistema [[#Publicación]]; no se repite aquí.
 
 ### 4. Idioma de código y documentación
 
