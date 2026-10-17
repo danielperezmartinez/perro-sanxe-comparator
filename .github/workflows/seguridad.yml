@@ -1,8 +1,8 @@
 name: Seguridad
 
 # Comprobaciones del sistema "Seguridad, coste y cumplimiento" (docs/README.md).
-# No son obligatorias en la protección de rama hasta que estén en verde: la
-# base actual falla a propósito en los hallazgos registrados como tareas.
+# Sus tres jobs son obligatorios para fusionar en main (protección de rama;
+# flujo en la regla 3 de docs/README.md).
 
 on:
   pull_request:
