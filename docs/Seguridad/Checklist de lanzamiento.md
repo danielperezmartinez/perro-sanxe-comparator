@@ -4,7 +4,7 @@ Tipo: Checklist
 Estado: Pendiente
 Resumen: Estado de la configuración fuera del código (gasto, Auth, firewall, secretos, plan, GitHub, legal y scraping) que ningún test del repo comprueba. Pendiente de la primera revisión en los paneles; los datos ya conocidos vienen de la auditoría de solo lectura del 2026-10-16.
 Última revisión: 2026-10-17
-Última modificación: 2026-10-17T14:40:00+02:00
+Última modificación: 2026-10-17T15:15:00+02:00
 ---
 
 # Checklist de lanzamiento
@@ -44,7 +44,7 @@ lanzamiento público, al cambiar de plan y, como mínimo, una vez por trimestre.
 - [ ] Deployment Protection en Preview si las previews no deben ser públicas.
 - [ ] Variables secretas solo en los entornos que las usan y marcadas como
       sensibles (la app solo necesita la clave publicable).
-- [ ] Cabeceras de seguridad servidas (CSP, `X-Content-Type-Options`,
+- [x] Cabeceras de seguridad servidas (CSP, `X-Content-Type-Options`,
       `Referrer-Policy`, `Permissions-Policy`); ver
       [[Tareas/Endurecer el workflow de Actions y añadir cabeceras de seguridad en Vercel]].
 
@@ -72,9 +72,9 @@ lanzamiento público, al cambiar de plan y, como mínimo, una vez por trimestre.
 
 > No es asesoramiento legal; ante dudas concretas, consulta a un profesional.
 
-- [ ] Aviso legal (LSSI-CE) y política de privacidad (RGPD) publicados y
-      enlazados desde la página. Hechos en el código (`/aviso-legal`,
-      `/privacidad`); falta comprobarlos en producción tras desplegar.
+- [x] Aviso legal (LSSI-CE) y política de privacidad (RGPD) publicados y
+      enlazados desde la página (`/aviso-legal`, `/privacidad`; comprobado en
+      producción el 2026-10-17).
 - [x] Terceros que reciben datos listados en la política, con región:
       Vercel (EE. UU.), Supabase (UE, Irlanda) y Google Fonts (EE. UU.). Ya no
       se usa Nominatim: la ubicación se resuelve en el navegador.
@@ -114,3 +114,4 @@ lanzamiento público, al cambiar de plan y, como mínimo, una vez por trimestre.
 | 2026-10-17 | Agente (rama `chore/sistema-seguridad`) | Scraping y terceros de privacidad marcados tras los arreglos. Los puntos de Supabase, Vercel y GitHub siguen sin revisar en los paneles; la migración de endurecimiento está pendiente de aplicar en remoto. |
 | 2026-10-17 | Agente (sincronización a v2) | Sección GitHub ampliada. Revisión inicial con gitleaks 8.30.1 (genéricos y personales): historial, mensajes y ramas sin fugas, salvo las dos claves públicas de Supabase, documentadas en [[Excepción - claves públicas de Supabase en el historial]]. |
 | 2026-10-17 | Agente (con aprobación del usuario) | Migración de endurecimiento aplicada en remoto y verificada (catálogo limpio, buscador correcto, advisor de rendimiento sin avisos). |
+| 2026-10-17 | Agente | PR #1 desplegada en producción: cabeceras de seguridad y páginas legales comprobadas; versión 0.5.0. |
