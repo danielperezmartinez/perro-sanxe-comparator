@@ -1,6 +1,6 @@
 {
   "name": "perro-sanxe-comparator",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "scripts": {
     "preinstall": "npx --yes only-allow pnpm",
     "ng": "ng",
