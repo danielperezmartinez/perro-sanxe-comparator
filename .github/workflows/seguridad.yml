@@ -1,8 +1,7 @@
 name: Seguridad
 
 # Comprobaciones del sistema "Seguridad, coste y cumplimiento" (docs/README.md).
-# Sus tres jobs son obligatorios para fusionar en main (protección de rama;
-# flujo en la regla 3 de docs/README.md).
+# Publicación: sección "Publicación" de docs/README.md.
 
 on:
   pull_request:
@@ -13,9 +12,40 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: seguridad-${{ github.event.pull_request.number || github.ref }}
+  # En main no se cancela: un push de la bóveda no debe interrumpir el CI de una
+  # integración de código.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
+  # Detecta si hay cambios fuera de docs/. Los jobs rls y a11y se omiten si no los
+  # hay (un check omitido cuenta como superado); fugas corre siempre.
+  cambios:
+    name: Cambios
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      codigo: ${{ steps.diff.outputs.codigo }}
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          fetch-depth: 0
+      - id: diff
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+        # Si el diff no se puede calcular (p. ej. workflow_dispatch), se trata como código.
+        run: |
+          if git diff --quiet "$BASE_SHA" HEAD -- . ':(exclude)docs' 2>/dev/null; then
+            echo "codigo=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "codigo=true" >> "$GITHUB_OUTPUT"
+          fi
+
   rls:
     name: Tests RLS y catálogo (pgTAP)
+    needs: cambios
+    if: needs.cambios.outputs.codigo == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -28,10 +58,19 @@ jobs:
 
   a11y:
     name: Accesibilidad (AXE) y secretos en el bundle
+    needs: cambios
+    if: needs.cambios.outputs.codigo == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          fetch-depth: 0
+
+      # Publicación: cada PR de código sube la versión por encima de la de main.
+      - name: La versión supera la de main
+        if: github.event_name == 'pull_request'
+        run: sh scripts/comprobar-version.sh "${{ github.event.pull_request.base.sha }}"
 
       - name: Habilitar pnpm (Corepack)
         run: corepack enable

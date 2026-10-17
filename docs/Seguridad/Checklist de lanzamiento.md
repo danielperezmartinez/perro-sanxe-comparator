@@ -4,7 +4,7 @@ Tipo: Checklist
 Estado: Pendiente
 Resumen: Estado de la configuración fuera del código (gasto, Auth, firewall, secretos, plan, GitHub, legal y scraping) que ningún test del repo comprueba. Pendiente de la primera revisión en los paneles; los datos ya conocidos vienen de la auditoría de solo lectura del 2026-10-16.
 Última revisión: 2026-10-17
-Última modificación: 2026-10-17T15:15:00+02:00
+Última modificación: 2026-10-17T18:00:00+02:00
 ---
 
 # Checklist de lanzamiento
@@ -53,8 +53,10 @@ lanzamiento público, al cambiar de plan y, como mínimo, una vez por trimestre.
 - [ ] Secretos `SUPABASE_URL` y `SUPABASE_SECRET_KEY` solo como secretos de
       Actions; `SUPABASE_SERVICE_ROLE_KEY` legacy retirado si ya no se usa.
 - [ ] Permisos por defecto de `GITHUB_TOKEN` en solo lectura.
-- [ ] Jobs `rls`, `a11y` y `fugas` de `seguridad.yml` marcados como
-      obligatorios en la protección de `main` **cuando estén en verde**.
+- [x] Jobs `rls`, `a11y` y `fugas` de `seguridad.yml` obligatorios en la
+      protección de `main`, en `strict` (aplicado el 2026-10-17).
+- [ ] Ajustes del repo y protección de `main` de [[README#Publicación]]
+      (solo squash, `delete_branch_on_merge`, PR obligatoria, historial lineal).
 - [x] Visibilidad del repo conocida: **público** (comprobado el 2026-10-17), así
       que aplica "Vulnerabilidades y hallazgos sensibles".
 - [ ] Secret scanning activado.

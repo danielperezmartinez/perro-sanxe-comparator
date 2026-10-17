@@ -21,6 +21,10 @@ Este es el nexo de navegación de la memoria del proyecto **PerroSanxeComparator
 [[Seguridad/Seguridad.base|Abrir el panel de seguridad]] ·
 [[Seguridad/Checklist de lanzamiento|Checklist de lanzamiento]]
 
+### Publicación
+
+Reglas en [[README#Publicación|README → Publicación]].
+
 ## Próximos sistemas
 
 - **ADR (decisiones de arquitectura)** — no montado en esta primera pasada;
