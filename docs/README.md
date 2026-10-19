@@ -171,7 +171,8 @@ lo que se haga con MCP, CLI o panel.
   - Datos del entorno personal: nombres de host, de máquina o de dispositivo,
     usuarios del sistema operativo, IP (de red local, VPN o públicas), dominios y
     redes propios, rutas personales (`C:Users<nombre>`, `/home/<nombre>`,
-    unidades y carpetas propias) y correos personales.
+    unidades y carpetas propias) y correos personales (salvo el correo de autor
+    de los commits, ver [[#Publicación]]).
   - Vulnerabilidades sin corregir (ver "Vulnerabilidades y hallazgos sensibles").
 - En la documentación se usan **marcadores genéricos** (`<usuario>`,
   `<host-de-pruebas>`, `<ruta-al-proyecto>`). Los valores reales viven fuera del
@@ -327,9 +328,8 @@ webs del usuario (decidida el 2026-10-17).
   `READY` y sus logs. Si queda en `ERROR`, avisar al usuario con un reporte y
   detenerse: no reintentar, redesplegar ni hacer rollback por iniciativa
   propia. La corrección es una PR nueva con su propia versión.
-- Los commits nuevos usan el correo privado de GitHub
-  (`…@users.noreply.github.com`), nunca uno personal. El historial ya
-  publicado no se reescribe.
+- Los commits usan el correo personal (`user.email` global); el usuario lo
+  tiene público en GitHub. El historial ya publicado no se reescribe.
 - Las migraciones y funciones del proyecto Supabase propio de este repo se
   aplican aparte, con autorización expresa del usuario, antes de integrar el
   código que las necesita. El fichero de migración del repo lleva la misma
