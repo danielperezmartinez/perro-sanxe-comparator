@@ -46,3 +46,8 @@ Thumbs.db
 # Playwright
 /test-results
 /playwright-report
+
+# Local secrets and platform config (docs/README.md, "Secretos")
+.env*
+!.env.example
+.vercel
